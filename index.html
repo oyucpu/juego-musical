@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aitana & Mafalda Cardenal: Emoji Song Match</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0a0512;
+      --card-bg: #160d29;
+      --accent-aitana: #ff2a85;
+      --accent-mafalda: #7000ff;
+      --accent-gold: #ffb703;
+      --accent-green: #00e676;
+      --text-main: #f8f9fa;
+      --text-muted: #a0aec0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 10px;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(255, 42, 133, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(112, 0, 255, 0.15) 0%, transparent 40%);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ff2a85, #ffb703, #7000ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .controls-panel {
+      background: rgba(22, 13, 41, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 14px 18px;
+      width: 100%;
+      max-width: 1050px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn, select.btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .btn:hover, select.btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn.active {
+      background: linear-gradient(135deg, var(--accent-aitana), var(--accent-mafalda));
+      border-color: transparent;
+    }
+
+    .level-badge {
+      background: linear-gradient(135deg, var(--accent-gold), #ff8800);
+      color: #000;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(255, 183, 3, 0.4);
+    }
+
+    select.btn option {
+      background: var(--card-bg);
+      color: var(--text-main);
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 16px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .stat-val {
+      color: var(--accent-gold);
+    }
+
+    /* Grid Adaptativo */
+    .game-container {
+      width: 100%;
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      perspective: 1000px;
+      margin-bottom: 30px;
+    }
+
+    /* Cartas 3D */
+    .card {
+      aspect-ratio: 3/4;
+      position: relative;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transition: transform 0.4s ease;
+      cursor: pointer;
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+    }
+
+    /* Estado de acierto (Matched) */
+    .card.matched {
+      transform: rotateY(180deg) scale(0.96);
+      -webkit-transform: rotateY(180deg) scale(0.96);
+      cursor: default;
+      pointer-events: none;
+      animation: matchPulse 0.4s ease-out;
+    }
+
+    @keyframes matchPulse {
+      0% { transform: rotateY(180deg) scale(1); }
+      50% { transform: rotateY(180deg) scale(1.08); }
+      100% { transform: rotateY(180deg) scale(0.96); }
+    }
+
+    .card.matched .card-front {
+      border: 2px solid var(--accent-green) !important;
+      background: linear-gradient(145deg, #0d2818, #051a0e) !important;
+      box-shadow: 0 0 15px rgba(0, 230, 118, 0.4), inset 0 0 12px rgba(0, 230, 118, 0.2) !important;
+    }
+
+    .card.matched .song-title-text {
+      color: #e8ffea !important;
+      font-weight: 800;
+    }
+
+    .card.matched .matched-indicator {
+      display: block !important;
+    }
+
+    .matched-indicator {
+      display: none;
+      font-size: 0.65rem;
+      font-weight: 900;
+      color: var(--accent-green);
+      margin-top: 6px;
+      background: rgba(0, 230, 118, 0.15);
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 230, 118, 0.3);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      text-align: center;
+      border: 2px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .card-back {
+      background: linear-gradient(145deg, #1f1238, #0e071c);
+      z-index: 2;
+    }
+
+    .card-back::after {
+      content: '🎵';
+      font-size: 1.8rem;
+    }
+
+    .card-front {
+      background: var(--card-bg);
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+      z-index: 1;
+    }
+
+    .card.aitana .card-front { border-color: var(--accent-aitana); }
+    .card.mafalda .card-front { border-color: var(--accent-mafalda); }
+
+    .artist-badge {
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+
+    .card.aitana .artist-badge { background: rgba(255, 42, 133, 0.25); color: var(--accent-aitana); }
+    .card.mafalda .artist-badge { background: rgba(112, 0, 255, 0.25); color: #b17aff; }
+
+    .emoji-riddle { font-size: 1.5rem; line-height: 1.2; }
+    .song-title-text { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--text-main); }
+
+    /* Modal de Nivel Completado */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(10, 5, 18, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 100; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .modal-content {
+      background: #160d29; border: 2px solid var(--accent-gold);
+      padding: 25px; border-radius: 24px; text-align: center;
+      max-width: 400px; width: 90%;
+      box-shadow: 0 0 30px rgba(255, 183, 3, 0.3);
+    }
+
+    /* Modo Estudio */
+    .study-container {
+      display: none; width: 100%; max-width: 400px;
+      flex-direction: column; align-items: center; gap: 18px;
+    }
+
+    .flashcard {
+      width: 100%; aspect-ratio: 4/3; position: relative;
+      transform-style: preserve-3d; -webkit-transform-style: preserve-3d;
+      transition: transform 0.5s ease; cursor: pointer;
+    }
+
+    .flashcard.flipped { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); }
+
+    .flashcard-face {
+      position: absolute; width: 100%; height: 100%;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      border-radius: 20px; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; padding: 20px;
+      text-align: center; background: var(--card-bg);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .flashcard-front { border-color: var(--accent-aitana); }
+    .flashcard-back { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); border-color: var(--accent-mafalda); }
+
+    .flashcard .emoji-display { font-size: 3rem; margin-bottom: 12px; }
+    .flashcard .title-display { font-size: 1.3rem; font-family: 'Outfit', sans-serif; font-weight: 800; }
+
+    .study-nav { display: flex; gap: 12px; width: 100%; justify-content: center; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Aitana & Mafalda Cardenal</h1>
+    <p class="subtitle">Emoji Song Match — 120 Canciones Únicas</p>
+  </header>
+
+  <div class="controls-panel">
+    <div class="control-group">
+      <button class="btn active" id="btnModeGame" onclick="switchMode('game')">🎮 Juego</button>
+      <button class="btn" id="btnModeStudy" onclick="switchMode('study')">📚 Estudio</button>
+      <button class="btn" id="btnAudio" onclick="toggleAudio()">🔊 Sonido: ON</button>
+    </div>
+
+    <div class="control-group" id="gameFilters">
+      <span class="level-badge" id="levelDisplay">Nivel 1 (4 Parejas)</span>
+      <select class="btn" id="artistFilter" onchange="resetProgression()">
+        <option value="all">Todas las Artistas (120)</option>
+        <option value="aitana">Solo Aitana (60)</option>
+        <option value="mafalda">Solo Mafalda (60)</option>
+      </select>
+      <button class="btn" onclick="resetProgression()">🔄 Reiniciar</button>
+    </div>
+
+    <div class="stats-bar" id="gameStats">
+      <div>⏱️ <span class="stat-val" id="timeCount">00:00</span></div>
+      <div>🎯 Movs: <span class="stat-val" id="moveCount">0</span></div>
+      <div>✨ Aciertos: <span class="stat-val" id="matchCount">0</span></div>
+    </div>
+  </div>
+
+  <!-- Tablero del Juego -->
+  <div class="game-container" id="gameBoard"></div>
+
+  <!-- Modo Estudio -->
+  <div class="study-container" id="
