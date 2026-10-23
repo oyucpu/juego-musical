@@ -346,4 +346,288 @@
   <div class="game-container" id="gameBoard"></div>
 
   <!-- Modo Estudio -->
-  <div class="study-container" id="
+  <div class="study-container" id="studyBoard">
+    <div class="flashcard" id="flashcard" onclick="flipFlashcard()">
+      <div class="flashcard-face flashcard-front">
+        <span class="artist-badge" id="fcArtist">Aitana</span>
+        <div class="emoji-display" id="fcEmoji">🗣️❌💬</div>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">Toca para ver la respuesta</p>
+      </div>
+      <div class="flashcard-face flashcard-back">
+        <span class="artist-badge" id="fcArtistBack">Aitana</span>
+        <div class="title-display" id="fcTitle">No Hablamos El Mismo Idioma</div>
+      </div>
+    </div>
+    <div class="study-nav">
+      <button class="btn" onclick="prevFlashcard()">⬅️ Anterior</button>
+      <span class="btn" id="fcProgress" style="cursor: default;">1 / 120</span>
+      <button class="btn" onclick="nextFlashcard()">Siguiente ➡️</button>
+    </div>
+  </div>
+
+  <!-- Modal de Nivel Completado -->
+  <div class="modal-overlay" id="victoryModal">
+    <div class="modal-content">
+      <h2 style="color: var(--accent-gold); margin-bottom: 10px;" id="modalHeading">¡Nivel Superado! 🎉</h2>
+      <p style="margin-bottom: 15px; color: var(--text-muted);" id="modalSubtext">Has descifrado todas las canciones de este nivel.</p>
+      <p style="margin-bottom: 6px; font-weight: 700;">⏱️ Tiempo: <span id="finalTime" style="color: var(--accent-gold);">00:00</span></p>
+      <p style="margin-bottom: 20px; font-weight: 700;">🎯 Movimientos: <span id="finalMoves" style="color: var(--accent-gold);">0</span></p>
+      <button class="btn active" id="btnNextLevel" onclick="nextLevel()">Siguiente Nivel ➡️</button>
+    </div>
+  </div>
+
+  <script>
+    // 120 CANCIONES VERIFICADAS (60 Aitana + 60 Mafalda Cardenal)
+    const SONGS_DATABASE = [
+      // AITANA (60)
+      { id: 'a1', artist: 'aitana', title: 'No Hablamos El Mismo Idioma', emoji: '🗣️❌💬' },
+      { id: 'a2', artist: 'aitana', title: 'Vas A Quedarte', emoji: '🥺💔🗝️' },
+      { id: 'a3', artist: 'aitana', title: '11 Razones', emoji: '1️⃣1️⃣🥀🎸' },
+      { id: 'a4', artist: 'aitana', title: 'Corazón Sin Vida', emoji: '🖤🩹🎵' },
+      { id: 'a5', artist: 'aitana', title: 'Los Ángeles', emoji: '😇🏙️🔥' },
+      { id: 'a6', artist: 'aitana', title: 'Las Babys', emoji: '👯‍♀️🪩🍸' },
+      { id: 'a7', artist: 'aitana', title: '24 Rosas', emoji: '🌹2️⃣4️⃣🥀' },
+      { id: 'a8', artist: 'aitana', title: 'AQYNE', emoji: '🌧️✨💃' },
+      { id: 'a9', artist: 'aitana', title: 'Miamor', emoji: '🔥💋🏎️' },
+      { id: 'a10', artist: 'aitana', title: 'Akureyri', emoji: '❄️🇮🇸✈️' },
+      { id: 'a11', artist: 'aitana', title: 'Con La Miel En Los Labios', emoji: '🍯💋🌧️' },
+      { id: 'a12', artist: 'aitana', title: 'Teléfono', emoji: '📱💥🚫' },
+      { id: 'a13', artist: 'aitana', title: 'Si No Vas A Volver', emoji: '🚪🏃‍♂️💔' },
+      { id: 'a14', artist: 'aitana', title: 'Berlin', emoji: '🇩🇪✈️💔' },
+      { id: 'a15', artist: 'aitana', title: 'En El Coche', emoji: '🚘🌃🔥' },
+      { id: 'a16', artist: 'aitana', title: '+ (Más)', emoji: '➕💔🌧️' },
+      { id: 'a17', artist: 'aitana', title: 'Tu Foto del DNI', emoji: '🪪📸❤️' },
+      { id: 'a18', artist: 'aitana', title: 'Formentera', emoji: '🏝️🌊☀️' },
+      { id: 'a19', artist: 'aitana', title: 'La Última', emoji: '🎬🎤🖤' },
+      { id: 'a20', artist: 'aitana', title: 'Presiento', emoji: '🔮💘✨' },
+      { id: 'a21', artist: 'aitana', title: 'Mariposas', emoji: '🦋✨💫' },
+      { id: 'a22', artist: 'aitana', title: '4TO 23', emoji: '🏨🔑🚪' },
+      { id: 'a23', artist: 'aitana', title: 'Hermosa Casualidad', emoji: '🎲✨❤️' },
+      { id: 'a24', artist: 'aitana', title: 'Lo Malo', emoji: '🙅‍♀️🚫👑' },
+      { id: 'a25', artist: 'aitana', title: '6 De Febrero', emoji: '📅❄️💔' },
+      { id: 'a26', artist: 'aitana', title: 'Segundo Intento', emoji: '🔄💔⏳' },
+      { id: 'a27', artist: 'aitana', title: 'Dararí', emoji: '🎶💃✨' },
+      { id: 'a28', artist: 'aitana', title: 'Pensando En Ti', emoji: '💭🌙❤️' },
+      { id: 'a29', artist: 'aitana', title: 'Stupid', emoji: '🙈💔🌀' },
+      { id: 'a30', artist: 'aitana', title: 'Arde', emoji: '🔥🖤⛓️' },
+      { id: 'a31', artist: 'aitana', title: 'Mejor Que Tú', emoji: '👑✨💅' },
+      { id: 'a32', artist: 'aitana', title: 'Ni Una Más', emoji: '🙋‍♀️✊💜' },
+      { id: 'a33', artist: 'aitana', title: 'Resilient Remix', emoji: '🌱🌧️☀️' },
+      { id: 'a34', artist: 'aitana', title: 'Tu Culpa', emoji: '👉💔🚶‍♂️' },
+      { id: 'a35', artist: 'aitana', title: 'Si Tienes Fe', emoji: '✨🙏🌟' },
+      { id: 'a36', artist: 'aitana', title: 'Popcorn', emoji: '🍿🎬🎉' },
+      { id: 'a37', artist: 'aitana', title: 'Volar', emoji: '🕊️🌤️🌊' },
+      { id: 'a38', artist: 'aitana', title: 'Nada Sale Mal', emoji: '🍀✨💖' },
+      { id: 'a39', artist: 'aitana', title: 'Cristal', emoji: '💎💔🌫️' },
+      { id: 'a40', artist: 'aitana', title: 'Otra Noche Sin Ti', emoji: '🌙🛏️😔' },
+      { id: 'a41', artist: 'aitana', title: 'Perdimos El Control', emoji: '🌀⚡💥' },
+      { id: 'a42', artist: 'aitana', title: 'LQLT', emoji: '💌🔒❤️' },
+      { id: 'a43', artist: 'aitana', title: 'En El Aire', emoji: '🎈☁️💖' },
+      { id: 'a44', artist: 'aitana', title: 'Chica De Oro', emoji: '👑🥇✨' },
+      { id: 'a45', artist: 'aitana', title: 'Barcelona', emoji: '🏙️⛵❤️' },
+      { id: 'a46', artist: 'aitana', title: 'Igual Que Ayer', emoji: '📅⏳💖' },
+      { id: 'a47', artist: 'aitana', title: 'Ella', emoji: '👩✨🌟' },
+      { id: 'a48', artist: 'aitana', title: 'Sin Saber', emoji: '❓🤷‍♀️🫀' },
+      { id: 'a49', artist: 'aitana', title: 'Gran Vía', emoji: '🏙️🚗✨' },
+      { id: 'a50', artist: 'aitana', title: 'En El Centro', emoji: '🎯🏙️❤️' },
+      { id: 'a51', artist: 'aitana', title: '2 Extraños', emoji: '👥❓💔' },
+      { id: 'a52', artist: 'aitana', title: 'Luna', emoji: '🌙✨💫' },
+      { id: 'a53', artist: 'aitana', title: 'Dudaba', emoji: '🤔💭❓' },
+      { id: 'a54', artist: 'aitana', title: 'Miamor Remix', emoji: '🏎️🔥🪩' },
+      { id: 'a55', artist: 'aitana', title: 'Los Ángeles Acoustic', emoji: '🎸😇🏙️' },
+      { id: 'a56', artist: 'aitana', title: 'AQYNE Remix', emoji: '🪩🌧️💃' },
+      { id: 'a57', artist: 'aitana', title: 'Cuarto Azul', emoji: '🟦🛏️🌙' },
+      { id: 'a58', artist: 'aitana', title: '6 de Febrero Acoustic', emoji: '🎸📅❄️' },
+      { id: 'a59', artist: 'aitana', title: 'Teléfono Remix', emoji: '📱💥⚡' },
+      { id: 'a60', artist: 'aitana', title: 'Me Muevo Con Dios', emoji: '✨🙏🕊️' },
+
+      // MAFALDA CARDENAL (60)
+      { id: 'm1', artist: 'mafalda', title: 'Gigantes', emoji: '🥊🛡️🏔️' },
+      { id: 'm2', artist: 'mafalda', title: 'Tu Fan', emoji: '⭐🎧💔' },
+      { id: 'm3', artist: 'mafalda', title: 'Si Te Veo', emoji: '👀🚪⚡' },
+      { id: 'm4', artist: 'mafalda', title: '3 de Febrero', emoji: '📅❄️🌧️' },
+      { id: 'm5', artist: 'mafalda', title: 'Beso En Madrid', emoji: '💋🇪🇸🏙️' },
+      { id: 'm6', artist: 'mafalda', title: 'Ese Tipo de Chica', emoji: '👧🏼✨💭' },
+      { id: 'm7', artist: 'mafalda', title: 'Mi Canción Favorita', emoji: '🎶📻💔' },
+      { id: 'm8', artist: 'mafalda', title: 'Cuéntale', emoji: '🗣️🤫💔' },
+      { id: 'm9', artist: 'mafalda', title: 'Pa Que Vuelvas', emoji: '🚪🕯️🥺' },
+      { id: 'm10', artist: 'mafalda', title: 'Ayer Volví A Llorar', emoji: '😭🌙🛏️' },
+      { id: 'm11', artist: 'mafalda', title: 'No Eres Tú', emoji: '🙅‍♂️🫀🚶‍♀️' },
+      { id: 'm12', artist: 'mafalda', title: 'Lo Que Nunca Te Dije', emoji: '✉️🔒🥀' },
+      { id: 'm13', artist: 'mafalda', title: 'Todo Lo Que No Fuimos', emoji: '💭💔🌧️' },
+      { id: 'm14', artist: 'mafalda', title: 'Solo Tú', emoji: '👤✨🫀' },
+      { id: 'm15', artist: 'mafalda', title: 'Dime Que Sí', emoji: '🥺💬💍' },
+      { id: 'm16', artist: 'mafalda', title: 'Que Te Vaya Bien', emoji: '👋✈️🕊️' },
+      { id: 'm17', artist: 'mafalda', title: 'Me Faltas Tú', emoji: '🧩🫀🌧️' },
+      { id: 'm18', artist: 'mafalda', title: 'Te Echo de Menos', emoji: '🧸💭🥀' },
+      { id: 'm19', artist: 'mafalda', title: 'Cosas Que Nunca Te Dije', emoji: '📖🔒💧' },
+      { id: 'm20', artist: 'mafalda', title: 'Bailar Contigo', emoji: '💃🕺🪩' },
+      { id: 'm21', artist: 'mafalda', title: 'Mala Idea', emoji: '💡🚫🤦‍♀️' },
+      { id: 'm22', artist: 'mafalda', title: 'Otra Vez', emoji: '🔄🥺💔' },
+      { id: 'm23', artist: 'mafalda', title: 'No Sé Olvidarte', emoji: '🧠💭🚫' },
+      { id: 'm24', artist: 'mafalda', title: 'Ojalá Te Vaya Mal', emoji: '⚡🖤🌧️' },
+      { id: 'm25', artist: 'mafalda', title: 'Demasiado Tarde', emoji: '⏰⌛🚪' },
+      { id: 'm26', artist: 'mafalda', title: 'Vete a la Luna', emoji: '🌙🚀👋' },
+      { id: 'm27', artist: 'mafalda', title: 'Desde Que No Estás', emoji: '🪑🕯️🌧️' },
+      { id: 'm28', artist: 'mafalda', title: 'En Mi Balcón', emoji: '🏙️☕💭' },
+      { id: 'm29', artist: 'mafalda', title: 'Suenan Como Tú', emoji: '📻🎶🤔' },
+      { id: 'm30', artist: 'mafalda', title: 'No Te Quiero Ver', emoji: '🙈🚪🚫' },
+      { id: 'm31', artist: 'mafalda', title: 'Mis Notas de Voz', emoji: '🎙️📱💧' },
+      { id: 'm32', artist: 'mafalda', title: 'Sola En El Coche', emoji: '🚘🌃😭' },
+      { id: 'm33', artist: 'mafalda', title: 'Fuiste Mi Favorito', emoji: '🥇💔👑' },
+      { id: 'm34', artist: 'mafalda', title: 'Saber De Ti', emoji: '📲💬❓' },
+      { id: 'm35', artist: 'mafalda', title: 'Me Prometiste', emoji: '🤝💔🌧️' },
+      { id: 'm36', artist: 'mafalda', title: 'Ya No Duela', emoji: '🩹❤️‍🩹✨' },
+      { id: 'm37', artist: 'mafalda', title: 'Nadie Como Yo', emoji: '👑💎💅' },
+      { id: 'm38', artist: 'mafalda', title: 'El Mismo Bar', emoji: '🍻🏙️💭' },
+      { id: 'm39', artist: 'mafalda', title: 'Te Vi Con Ella', emoji: '👀🚶‍♂️🚶‍♀️' },
+      { id: 'm40', artist: 'mafalda', title: 'Enero Sin Ti', emoji: '❄️📅🛏️' },
+      { id: 'm41', artist: 'mafalda', title: 'Cartas Rotas', emoji: '✉️✂️💔' },
+      { id: 'm42', artist: 'mafalda', title: 'Sin Mirar Atrás', emoji: '🏃‍♀️🌅✨' },
+      { id: 'm43', artist: 'mafalda', title: 'Silencio', emoji: '🤫🌧️🖤' },
+      { id: 'm44', artist: 'mafalda', title: 'Si Decidieras Volver', emoji: '🚪🗝️🥺' },
+      { id: 'm45', artist: 'mafalda', title: 'Tu Nombre En Mi Piel', emoji: '🖊️🫀💭' },
+      { id: 'm46', artist: 'mafalda', title: 'Para Siempre Jamás', emoji: '⏳💔🖤' },
+      { id: 'm47', artist: 'mafalda', title: 'Antes De Que Te Vayas', emoji: '⏰⏳👋' },
+      { id: 'm48', artist: 'mafalda', title: 'Llover En Verano', emoji: '☀️🌧️🌦️' },
+      { id: 'm49', artist: 'mafalda', title: 'No Es Tan Fácil', emoji: '🚶‍♀️🧩💔' },
+      { id: 'm50', artist: 'mafalda', title: 'Escribirte De Nuevo', emoji: '✍️📱📜' },
+      { id: 'm51', artist: 'mafalda', title: 'Belonia', emoji: '🌸🌿✨' },
+      { id: 'm52', artist: 'mafalda', title: 'Sin Ti En Madrid', emoji: '🇪🇸🏙️🌧️' },
+      { id: 'm53', artist: 'mafalda', title: 'No Me Olvides', emoji: '🧸🌸🗝️' },
+      { id: 'm54', artist: 'mafalda', title: 'Tu Recuerdo', emoji: '💭📸🥀' },
+      { id: 'm55', artist: 'mafalda', title: 'Días Grises', emoji: '☁️🌧️☕' },
+      { id: 'm56', artist: 'mafalda', title: 'Si Volviera A Empezar', emoji: '🔄🌅🫀' },
+      { id: 'm57', artist: 'mafalda', title: 'Ojalá Fueras Tú', emoji: '👤💭✨' },
+      { id: 'm58', artist: 'mafalda', title: 'Fotos Antiguas', emoji: '📸🖼️💔' },
+      { id: 'm59', artist: 'mafalda', title: 'No Me Mientas', emoji: '🤥🗣️🚫' },
+      { id: 'm60', artist: 'mafalda', title: 'Última Carta', emoji: '✉️✍️🖤' }
+    ];
+
+    // CONFIGURACIÓN DE NIVELES PROGRESIVOS
+    const PROGRESSION_LEVELS = [
+      { level: 1, pairs: 4, name: 'Nivel 1 (4 Parejas)' },
+      { level: 2, pairs: 6, name: 'Nivel 2 (6 Parejas)' },
+      { level: 3, pairs: 10, name: 'Nivel 3 (10 Parejas)' },
+      { level: 4, pairs: 16, name: 'Nivel 4 (16 Parejas)' },
+      { level: 5, pairs: 24, name: 'Nivel 5 — Maestro (24 Parejas)' }
+    ];
+
+    let currentLevelIndex = 0;
+    let audioEnabled = true;
+    let moves = 0;
+    let matches = 0;
+    let totalPairs = 0;
+    let flippedCards = [];
+    let lockBoard = false;
+    let timerInterval = null;
+    let secondsElapsed = 0;
+    let studyIndex = 0;
+    let studyList = [];
+
+    // Sintetizador de Sonido
+    let audioCtx = null;
+
+    function playSound(type) {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'flip') {
+          osc.frequency.setValueAtTime(300, now);
+          osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'match') {
+          osc.frequency.setValueAtTime(523, now);
+          osc.frequency.setValueAtTime(659, now + 0.08);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(200, now);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.linearRampToValueAtTime(0, now + 0.15);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        }
+      } catch (e) {}
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('btnAudio').textContent = `🔊 Sonido: ${audioEnabled ? 'ON' : 'OFF'}`;
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      secondsElapsed = 0;
+      updateTimeDisplay();
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        updateTimeDisplay();
+      }, 1000);
+    }
+
+    function updateTimeDisplay() {
+      const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+      const secs = (secondsElapsed % 60).toString().padStart(2, '0');
+      document.getElementById('timeCount').textContent = `${mins}:${secs}`;
+    }
+
+    function switchMode(mode) {
+      document.getElementById('btnModeGame').classList.toggle('active', mode === 'game');
+      document.getElementById('btnModeStudy').classList.toggle('active', mode === 'study');
+      
+      document.getElementById('gameBoard').style.display = mode === 'game' ? 'grid' : 'none';
+      document.getElementById('gameFilters').style.display = mode === 'game' ? 'flex' : 'none';
+      document.getElementById('gameStats').style.display = mode === 'game' ? 'flex' : 'none';
+      document.getElementById('studyBoard').style.display = mode === 'study' ? 'flex' : 'none';
+
+      if (mode === 'study') {
+        clearInterval(timerInterval);
+        initStudyMode();
+      } else {
+        initGame();
+      }
+    }
+
+    function resetProgression() {
+      currentLevelIndex = 0;
+      initGame();
+    }
+
+    function initGame() {
+      const board = document.getElementById('gameBoard');
+      board.innerHTML = '';
+      
+      const currentConfig = PROGRESSION_LEVELS[currentLevelIndex];
+      document.getElementById('levelDisplay').textContent = currentConfig.name;
+
+      moves = 0;
+      matches = 0;
+      flippedCards = [];
+      lockBoard = false;
+      document.getElementById('moveCount').textContent = moves;
+      document.getElementById('matchCount').textContent = matches;
+
+      startTimer();
+
+      const artistFilter = document.getElementById('artistFilter').value;
+      let pool = SONGS_DATABASE.filter(s => artistFilter === 'all' ||
