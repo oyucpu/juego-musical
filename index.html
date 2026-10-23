@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aitana & Mafalda Cardenal: Emoji Song Match</title>
+  <title>Aitana &amp; Mafalda Cardenal: Emoji Song Match</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -213,6 +213,9 @@
       left: 0;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+      /* Fuerza una cara 3D independiente: evita que Firefox pinte el reverso al girar */
+      transform: rotateY(0deg) translateZ(0.1px);
+      -webkit-transform: rotateY(0deg) translateZ(0.1px);
       border-radius: 14px;
       display: flex;
       flex-direction: column;
@@ -225,7 +228,7 @@
 
     .card-back {
       background: linear-gradient(145deg, #1f1238, #0e071c);
-      z-index: 2;
+      /* No usar z-index entre las caras: puede provocar artefactos en Firefox */
     }
 
     .card-back::after {
@@ -235,9 +238,8 @@
 
     .card-front {
       background: var(--card-bg);
-      transform: rotateY(180deg);
-      -webkit-transform: rotateY(180deg);
-      z-index: 1;
+      transform: rotateY(180deg) translateZ(0.2px);
+      -webkit-transform: rotateY(180deg) translateZ(0.2px);
     }
 
     .card.aitana .card-front { border-color: var(--accent-aitana); }
@@ -309,13 +311,17 @@
     .flashcard .title-display { font-size: 1.3rem; font-family: 'Outfit', sans-serif; font-weight: 800; }
 
     .study-nav { display: flex; gap: 12px; width: 100%; justify-content: center; }
+
+    .badge-aitana { background: rgba(255, 42, 133, 0.25); color: var(--accent-aitana); }
+    .badge-mafalda { background: rgba(112, 0, 255, 0.25); color: #b17aff; }
+    .flashcard-face .artist-badge { font-size: 0.7rem; margin-bottom: 12px; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Aitana & Mafalda Cardenal</h1>
-    <p class="subtitle">Emoji Song Match — 120 Canciones Únicas</p>
+    <h1>Aitana &amp; Mafalda Cardenal</h1>
+    <p class="subtitle" id="subtitleText">Emoji Song Match</p>
   </header>
 
   <div class="controls-panel">
@@ -328,9 +334,9 @@
     <div class="control-group" id="gameFilters">
       <span class="level-badge" id="levelDisplay">Nivel 1 (4 Parejas)</span>
       <select class="btn" id="artistFilter" onchange="resetProgression()">
-        <option value="all">Todas las Artistas (120)</option>
-        <option value="aitana">Solo Aitana (60)</option>
-        <option value="mafalda">Solo Mafalda (60)</option>
+        <option value="all" id="optAll">Todas las Artistas</option>
+        <option value="aitana" id="optAitana">Solo Aitana</option>
+        <option value="mafalda" id="optMafalda">Solo Mafalda</option>
       </select>
       <button class="btn" onclick="resetProgression()">🔄 Reiniciar</button>
     </div>
@@ -360,7 +366,7 @@
     </div>
     <div class="study-nav">
       <button class="btn" onclick="prevFlashcard()">⬅️ Anterior</button>
-      <span class="btn" id="fcProgress" style="cursor: default;">1 / 120</span>
+      <span class="btn" id="fcProgress" style="cursor: default;">1 / 1</span>
       <button class="btn" onclick="nextFlashcard()">Siguiente ➡️</button>
     </div>
   </div>
@@ -377,7 +383,7 @@
   </div>
 
   <script>
-    // 120 CANCIONES VERIFICADAS (60 Aitana + 60 Mafalda Cardenal)
+    // BASE DE CANCIONES (Aitana + Mafalda Cardenal)
     const SONGS_DATABASE = [
       // AITANA (60)
       { id: 'a1', artist: 'aitana', title: 'No Hablamos El Mismo Idioma', emoji: '🗣️❌💬' },
@@ -441,6 +447,16 @@
       { id: 'a59', artist: 'aitana', title: 'Teléfono Remix', emoji: '📱💥⚡' },
       { id: 'a60', artist: 'aitana', title: 'Me Muevo Con Dios', emoji: '✨🙏🕊️' },
 
+      // AITANA (añadidas)
+      { id: 'a61', artist: 'aitana', title: 'Volaré', emoji: '🕊️☁️✨' },
+      { id: 'a62', artist: 'aitana', title: 'Me Quedo', emoji: '🏠🫶💖' },
+      { id: 'a63', artist: 'aitana', title: 'Cuando Te Fuiste', emoji: '🚪👋🌧️' },
+      { id: 'a64', artist: 'aitana', title: 'No Te Has Ido Y Ya Te Extraño', emoji: '🚶‍♂️🥺💭' },
+      { id: 'a65', artist: 'aitana', title: 'Quieres', emoji: '🫴💬👯‍♀️' },
+      { id: 'a66', artist: 'aitana', title: 'Superestrella', emoji: '🌟🎤👑' },
+      { id: 'a67', artist: 'aitana', title: 'Conexión Psíquica', emoji: '🔮🧠💫' },
+      { id: 'a68', artist: 'aitana', title: 'Sentimiento Natural', emoji: '🌿🫀🔥' },
+
       // MAFALDA CARDENAL (60)
       { id: 'm1', artist: 'mafalda', title: 'Gigantes', emoji: '🥊🛡️🏔️' },
       { id: 'm2', artist: 'mafalda', title: 'Tu Fan', emoji: '⭐🎧💔' },
@@ -501,7 +517,32 @@
       { id: 'm57', artist: 'mafalda', title: 'Ojalá Fueras Tú', emoji: '👤💭✨' },
       { id: 'm58', artist: 'mafalda', title: 'Fotos Antiguas', emoji: '📸🖼️💔' },
       { id: 'm59', artist: 'mafalda', title: 'No Me Mientas', emoji: '🤥🗣️🚫' },
-      { id: 'm60', artist: 'mafalda', title: 'Última Carta', emoji: '✉️✍️🖤' }
+      { id: 'm60', artist: 'mafalda', title: 'Última Carta', emoji: '✉️✍️🖤' },
+      // MAFALDA (añadidas)
+      { id: 'm61', artist: 'mafalda', title: 'Apaga la Luz', emoji: '💡🌙🛏️' },
+      { id: 'm62', artist: 'mafalda', title: 'Déjame Entrar', emoji: '🚪🫴🥺' },
+      { id: 'm63', artist: 'mafalda', title: 'Normal', emoji: '🙂🫠🌀' },
+      { id: 'm64', artist: 'mafalda', title: 'Solo Un Nombre', emoji: '🏷️🗣️💔' },
+      { id: 'm65', artist: 'mafalda', title: 'Ella Era Yo', emoji: '👩🪞💭' },
+      { id: 'm66', artist: 'mafalda', title: 'Mi Chico', emoji: '👦💕🫶' },
+      { id: 'm67', artist: 'mafalda', title: 'No Hablamos El Mismo Idioma', emoji: '🗣️🙉🌍' },
+      { id: 'm68', artist: 'mafalda', title: 'Todo Es Azul', emoji: '🟦🌊💙' },
+      { id: 'm69', artist: 'mafalda', title: 'Tie My Shoes', emoji: '👟🎀🧵' },
+      { id: 'm70', artist: 'mafalda', title: 'No Estábamos Juntos', emoji: '🙅‍♀️👫💭' },
+      { id: 'm71', artist: 'mafalda', title: 'Carolina (Cuídale Mejor Que Yo)', emoji: '👩‍🦰🫶🥀' },
+      { id: 'm72', artist: 'mafalda', title: 'Venecia', emoji: '🛶🇮🇹💔' },
+      { id: 'm73', artist: 'mafalda', title: 'Para Mi Mejor Amiga', emoji: '👯‍♀️💌🫂' },
+      { id: 'm74', artist: 'mafalda', title: 'Esto Iba A Ser Una Canción De Amor', emoji: '💌🎶🥀' },
+      { id: 'm75', artist: 'mafalda', title: 'Superhumano', emoji: '🦸‍♀️💪🫀' },
+      { id: 'm76', artist: 'mafalda', title: 'Nada Mal', emoji: '👌🙂✨' },
+      { id: 'm77', artist: 'mafalda', title: 'La Historia De Nosotros', emoji: '📖👫💭' },
+      { id: 'm78', artist: 'mafalda', title: 'Qué Tiene?', emoji: '❓🤔🫀' },
+      { id: 'm79', artist: 'mafalda', title: 'Un Lunes Más', emoji: '📅😮‍💨☁️' },
+      { id: 'm80', artist: 'mafalda', title: 'Un Segundo', emoji: '⏱️1️⃣💨' },
+      { id: 'm81', artist: 'mafalda', title: 'Blue Jeans', emoji: '👖🟦🕺' },
+      { id: 'm82', artist: 'mafalda', title: 'Creo Que Te Quiero', emoji: '🤔💘🫣' },
+      { id: 'm83', artist: 'mafalda', title: 'Algo Paranormal', emoji: '👻🔮✨' },
+      { id: 'm84', artist: 'mafalda', title: 'Canción De Amor', emoji: '💌🎵❤️' }
     ];
 
     // CONFIGURACIÓN DE NIVELES PROGRESIVOS
@@ -630,4 +671,189 @@
       startTimer();
 
       const artistFilter = document.getElementById('artistFilter').value;
-      let pool = SONGS_DATABASE.filter(s => artistFilter === 'all' ||
+      let pool = SONGS_DATABASE.filter(s => artistFilter === 'all' || s.artist === artistFilter);
+
+      totalPairs = Math.min(currentConfig.pairs, pool.length);
+      const selected = shuffle(pool).slice(0, totalPairs);
+      if (totalPairs === 0) {
+        board.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--text-muted)">No hay canciones para mostrar.</p>';
+        clearInterval(timerInterval);
+        return;
+      }
+
+      // Cada canción genera dos cartas: una con el emoji y otra con el título
+      const deck = [];
+      selected.forEach(song => {
+        deck.push({ song, type: 'emoji' });
+        deck.push({ song, type: 'title' });
+      });
+
+      shuffle(deck).forEach(item => board.appendChild(createCard(item)));
+    }
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function createCard({ song, type }) {
+      const card = document.createElement('div');
+      card.className = `card ${song.artist}`;
+      card.dataset.id = song.id;
+
+      const artistName = song.artist === 'aitana' ? 'Aitana' : 'Mafalda';
+      const content = type === 'emoji'
+        ? `<div class="emoji-riddle">${song.emoji}</div>`
+        : `<div class="song-title-text">${song.title}</div>`;
+
+      card.innerHTML = `
+        <div class="card-face card-back"></div>
+        <div class="card-face card-front">
+          <span class="artist-badge">${artistName}</span>
+          ${content}
+          <div class="matched-indicator">✓ ¡Acierto!</div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => flipCard(card));
+      return card;
+    }
+
+    function flipCard(card) {
+      if (lockBoard) return;
+      if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+      card.classList.add('flipped');
+      playSound('flip');
+      flippedCards.push(card);
+
+      if (flippedCards.length === 2) {
+        moves++;
+        document.getElementById('moveCount').textContent = moves;
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      const [first, second] = flippedCards;
+
+      if (first.dataset.id === second.dataset.id) {
+        // Acierto
+        lockBoard = true;
+        setTimeout(() => {
+          first.classList.remove('flipped');
+          second.classList.remove('flipped');
+          first.classList.add('matched');
+          second.classList.add('matched');
+          playSound('match');
+
+          matches++;
+          document.getElementById('matchCount').textContent = matches;
+          flippedCards = [];
+          lockBoard = false;
+
+          if (matches === totalPairs) {
+            setTimeout(showVictory, 600);
+          }
+        }, 400);
+      } else {
+        // Fallo
+        lockBoard = true;
+        setTimeout(() => {
+          playSound('wrong');
+          first.classList.remove('flipped');
+          second.classList.remove('flipped');
+          flippedCards = [];
+          lockBoard = false;
+        }, 900);
+      }
+    }
+
+    function showVictory() {
+      clearInterval(timerInterval);
+      const isLast = currentLevelIndex === PROGRESSION_LEVELS.length - 1;
+
+      document.getElementById('finalTime').textContent = document.getElementById('timeCount').textContent;
+      document.getElementById('finalMoves').textContent = moves;
+      document.getElementById('modalHeading').textContent = isLast ? '¡Eres una Maestra! 👑' : '¡Nivel Superado! 🎉';
+      document.getElementById('modalSubtext').textContent = isLast
+        ? 'Has completado todos los niveles. ¡Increíble!'
+        : 'Has descifrado todas las canciones de este nivel.';
+      document.getElementById('btnNextLevel').textContent = isLast ? 'Jugar de nuevo 🔄' : 'Siguiente Nivel ➡️';
+
+      document.getElementById('victoryModal').classList.add('active');
+    }
+
+    function nextLevel() {
+      document.getElementById('victoryModal').classList.remove('active');
+      if (currentLevelIndex < PROGRESSION_LEVELS.length - 1) {
+        currentLevelIndex++;
+      } else {
+        currentLevelIndex = 0;
+      }
+      initGame();
+    }
+
+    // MODO ESTUDIO
+    function initStudyMode() {
+      studyList = SONGS_DATABASE.slice();
+      studyIndex = 0;
+      renderFlashcard();
+    }
+
+    function renderFlashcard() {
+      if (!studyList.length) {
+        document.getElementById('fcArtist').textContent = 'Sin canciones';
+        document.getElementById('fcArtistBack').textContent = 'Sin canciones';
+        document.getElementById('fcEmoji').textContent = '🎵';
+        document.getElementById('fcTitle').textContent = 'No hay canciones disponibles';
+        document.getElementById('fcProgress').textContent = '0 / 0';
+        return;
+      }
+      const song = studyList[studyIndex];
+      const artistName = song.artist === 'aitana' ? 'Aitana' : 'Mafalda';
+      const badgeClass = `artist-badge badge-${song.artist}`;
+
+      document.getElementById('flashcard').classList.remove('flipped');
+      document.getElementById('fcArtist').textContent = artistName;
+      document.getElementById('fcArtist').className = badgeClass;
+      document.getElementById('fcArtistBack').textContent = artistName;
+      document.getElementById('fcArtistBack').className = badgeClass;
+      document.getElementById('fcEmoji').textContent = song.emoji;
+      document.getElementById('fcTitle').textContent = song.title;
+      document.getElementById('fcProgress').textContent = `${studyIndex + 1} / ${studyList.length}`;
+    }
+
+    function flipFlashcard() {
+      document.getElementById('flashcard').classList.toggle('flipped');
+    }
+
+    function nextFlashcard() {
+      studyIndex = (studyIndex + 1) % studyList.length;
+      renderFlashcard();
+    }
+
+    function prevFlashcard() {
+      studyIndex = (studyIndex - 1 + studyList.length) % studyList.length;
+      renderFlashcard();
+    }
+
+    function updateCounts() {
+      const nA = SONGS_DATABASE.filter(x => x.artist === 'aitana').length;
+      const nM = SONGS_DATABASE.filter(x => x.artist === 'mafalda').length;
+      document.getElementById('subtitleText').textContent = `Emoji Song Match — ${nA + nM} Canciones Únicas`;
+      document.getElementById('optAll').textContent = `Todas las Artistas (${nA + nM})`;
+      document.getElementById('optAitana').textContent = `Solo Aitana (${nA})`;
+      document.getElementById('optMafalda').textContent = `Solo Mafalda (${nM})`;
+    }
+
+    // Arranque
+    updateCounts();
+    initGame();
+  </script>
+</body>
+</html>
