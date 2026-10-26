@@ -11,6 +11,7 @@
       --card-bg: #160d29;
       --accent-aitana: #ff2a85;
       --accent-mafalda: #7000ff;
+      --accent-desamor: #00b8d9;
       --accent-gold: #ffb703;
       --accent-green: #00e676;
       --text-main: #f8f9fa;
@@ -244,6 +245,7 @@
 
     .card.aitana .card-front { border-color: var(--accent-aitana); }
     .card.mafalda .card-front { border-color: var(--accent-mafalda); }
+    .card.desamor .card-front { border-color: var(--accent-desamor); }
 
     .artist-badge {
       font-size: 0.6rem;
@@ -256,8 +258,9 @@
 
     .card.aitana .artist-badge { background: rgba(255, 42, 133, 0.25); color: var(--accent-aitana); }
     .card.mafalda .artist-badge { background: rgba(112, 0, 255, 0.25); color: #b17aff; }
+    .card.desamor .artist-badge { background: rgba(0, 184, 217, 0.25); color: #4dd8f0; }
 
-    .emoji-riddle { font-size: 1.5rem; line-height: 1.2; }
+    .emoji-riddle { font-size: 1.5rem; line-height: 1.2; font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Twemoji Mozilla',sans-serif; }
     .song-title-text { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--text-main); }
 
     /* Modal de Nivel Completado */
@@ -307,13 +310,14 @@
     .flashcard-front { border-color: var(--accent-aitana); }
     .flashcard-back { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); border-color: var(--accent-mafalda); }
 
-    .flashcard .emoji-display { font-size: 3rem; margin-bottom: 12px; }
+    .flashcard .emoji-display { font-size: 3rem; margin-bottom: 12px; font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Twemoji Mozilla',sans-serif; }
     .flashcard .title-display { font-size: 1.3rem; font-family: 'Outfit', sans-serif; font-weight: 800; }
 
     .study-nav { display: flex; gap: 12px; width: 100%; justify-content: center; }
 
     .badge-aitana { background: rgba(255, 42, 133, 0.25); color: var(--accent-aitana); }
     .badge-mafalda { background: rgba(112, 0, 255, 0.25); color: #b17aff; }
+    .badge-desamor { background: rgba(0, 184, 217, 0.25); color: #4dd8f0; }
     .flashcard-face .artist-badge { font-size: 0.7rem; margin-bottom: 12px; }
   </style>
 </head>
@@ -337,6 +341,8 @@
         <option value="all" id="optAll">Todas las Artistas</option>
         <option value="aitana" id="optAitana">Solo Aitana</option>
         <option value="mafalda" id="optMafalda">Solo Mafalda</option>
+        <option value="desamor" id="optDesamor">💔 Solo Desamor</option>
+        <option value="mix" id="optMix">Todo mezclado</option>
       </select>
       <button class="btn" onclick="resetProgression()">🔄 Reiniciar</button>
     </div>
@@ -383,15 +389,15 @@
   </div>
 
   <script>
-    // BASE DE CANCIONES (Aitana + Mafalda Cardenal)
+    // BASE DE CANCIONES (Aitana + Mafalda Cardenal + Desamor de otros cantantes)
     const SONGS_DATABASE = [
       // AITANA (60)
       { id: 'a1', artist: 'aitana', title: 'No Hablamos El Mismo Idioma', emoji: '🗣️❌💬' },
       { id: 'a2', artist: 'aitana', title: 'Vas A Quedarte', emoji: '🥺💔🗝️' },
       { id: 'a3', artist: 'aitana', title: '11 Razones', emoji: '1️⃣1️⃣🥀🎸' },
-      { id: 'a4', artist: 'aitana', title: 'Corazón Sin Vida', emoji: '🖤🩹🎵' },
+      { id: 'a4', artist: 'aitana', title: 'Corazón Sin Vida', emoji: '🖤🤕🎵' },
       { id: 'a5', artist: 'aitana', title: 'Los Ángeles', emoji: '😇🏙️🔥' },
-      { id: 'a6', artist: 'aitana', title: 'Las Babys', emoji: '👯‍♀️🪩🍸' },
+      { id: 'a6', artist: 'aitana', title: 'Las Babys', emoji: '👯‍♀️🎉🍸' },
       { id: 'a7', artist: 'aitana', title: '24 Rosas', emoji: '🌹2️⃣4️⃣🥀' },
       { id: 'a8', artist: 'aitana', title: 'AQYNE', emoji: '🌧️✨💃' },
       { id: 'a9', artist: 'aitana', title: 'Miamor', emoji: '🔥💋🏎️' },
@@ -402,7 +408,7 @@
       { id: 'a14', artist: 'aitana', title: 'Berlin', emoji: '🇩🇪✈️💔' },
       { id: 'a15', artist: 'aitana', title: 'En El Coche', emoji: '🚘🌃🔥' },
       { id: 'a16', artist: 'aitana', title: '+ (Más)', emoji: '➕💔🌧️' },
-      { id: 'a17', artist: 'aitana', title: 'Tu Foto del DNI', emoji: '🪪📸❤️' },
+      { id: 'a17', artist: 'aitana', title: 'Tu Foto del DNI', emoji: '📇📸❤️' },
       { id: 'a18', artist: 'aitana', title: 'Formentera', emoji: '🏝️🌊☀️' },
       { id: 'a19', artist: 'aitana', title: 'La Última', emoji: '🎬🎤🖤' },
       { id: 'a20', artist: 'aitana', title: 'Presiento', emoji: '🔮💘✨' },
@@ -433,29 +439,64 @@
       { id: 'a45', artist: 'aitana', title: 'Barcelona', emoji: '🏙️⛵❤️' },
       { id: 'a46', artist: 'aitana', title: 'Igual Que Ayer', emoji: '📅⏳💖' },
       { id: 'a47', artist: 'aitana', title: 'Ella', emoji: '👩✨🌟' },
-      { id: 'a48', artist: 'aitana', title: 'Sin Saber', emoji: '❓🤷‍♀️🫀' },
+      { id: 'a48', artist: 'aitana', title: 'Sin Saber', emoji: '❓🤷‍♀️❤️' },
       { id: 'a49', artist: 'aitana', title: 'Gran Vía', emoji: '🏙️🚗✨' },
-      { id: 'a50', artist: 'aitana', title: 'En El Centro', emoji: '🎯🏙️❤️' },
+      { id: 'a50', artist: 'aitana', title: 'En El Centro De La Cama', emoji: '🎯🛏️🔥' },
       { id: 'a51', artist: 'aitana', title: '2 Extraños', emoji: '👥❓💔' },
       { id: 'a52', artist: 'aitana', title: 'Luna', emoji: '🌙✨💫' },
       { id: 'a53', artist: 'aitana', title: 'Dudaba', emoji: '🤔💭❓' },
-      { id: 'a54', artist: 'aitana', title: 'Miamor Remix', emoji: '🏎️🔥🪩' },
+      { id: 'a54', artist: 'aitana', title: 'Miamor Remix', emoji: '🏎️🔥🎉' },
       { id: 'a55', artist: 'aitana', title: 'Los Ángeles Acoustic', emoji: '🎸😇🏙️' },
-      { id: 'a56', artist: 'aitana', title: 'AQYNE Remix', emoji: '🪩🌧️💃' },
-      { id: 'a57', artist: 'aitana', title: 'Cuarto Azul', emoji: '🟦🛏️🌙' },
+      { id: 'a56', artist: 'aitana', title: 'AQYNE Remix', emoji: '🎉🌧️💃' },
+      { id: 'a57', artist: 'aitana', title: 'Cuarto Azul', emoji: '🔷🛏️🌙' },
       { id: 'a58', artist: 'aitana', title: '6 de Febrero Acoustic', emoji: '🎸📅❄️' },
       { id: 'a59', artist: 'aitana', title: 'Teléfono Remix', emoji: '📱💥⚡' },
       { id: 'a60', artist: 'aitana', title: 'Me Muevo Con Dios', emoji: '✨🙏🕊️' },
 
       // AITANA (añadidas)
       { id: 'a61', artist: 'aitana', title: 'Volaré', emoji: '🕊️☁️✨' },
-      { id: 'a62', artist: 'aitana', title: 'Me Quedo', emoji: '🏠🫶💖' },
+      { id: 'a62', artist: 'aitana', title: 'Me Quedo', emoji: '🏠💞💖' },
       { id: 'a63', artist: 'aitana', title: 'Cuando Te Fuiste', emoji: '🚪👋🌧️' },
       { id: 'a64', artist: 'aitana', title: 'No Te Has Ido Y Ya Te Extraño', emoji: '🚶‍♂️🥺💭' },
-      { id: 'a65', artist: 'aitana', title: 'Quieres', emoji: '🫴💬👯‍♀️' },
+      { id: 'a65', artist: 'aitana', title: 'Quieres', emoji: '🤲💬👯‍♀️' },
       { id: 'a66', artist: 'aitana', title: 'Superestrella', emoji: '🌟🎤👑' },
       { id: 'a67', artist: 'aitana', title: 'Conexión Psíquica', emoji: '🔮🧠💫' },
-      { id: 'a68', artist: 'aitana', title: 'Sentimiento Natural', emoji: '🌿🫀🔥' },
+      { id: 'a68', artist: 'aitana', title: 'Sentimiento Natural', emoji: '🌿❤️🔥' },
+
+      // AITANA (nuevas: Alpha, Cuarto Azul y singles)
+      { id: 'a69', artist: 'aitana', title: 'Alpha09', emoji: '🔢🌌✨' },
+      { id: 'a70', artist: 'aitana', title: 'Ella Bailaba', emoji: '💃🌃🎉' },
+      { id: 'a71', artist: 'aitana', title: 'The Killers', emoji: '🔫💋🖤' },
+      { id: 'a72', artist: 'aitana', title: 'Duele Un Montón Despedirme De Ti', emoji: '😢👋💔' },
+      { id: 'a73', artist: 'aitana', title: '¿Para Qué Volver?', emoji: '🔙❓🚫' },
+      { id: 'a74', artist: 'aitana', title: 'Desde Que Ya No Hablamos', emoji: '🔇📵💭' },
+      { id: 'a75', artist: 'aitana', title: 'De 1 Beso A 2 Besos', emoji: '1️⃣💋2️⃣' },
+      { id: 'a76', artist: 'aitana', title: 'Trankis', emoji: '😌🧘‍♀️🍃' },
+      { id: 'a77', artist: 'aitana', title: 'Música En El Cielo', emoji: '🎶☁️👴' },
+      { id: 'a78', artist: 'aitana', title: 'Cuando Hables Con Él', emoji: '🗣️👦📞' },
+      { id: 'a79', artist: 'aitana', title: 'Luz De La Mañana', emoji: '🌅💡😌' },
+      { id: 'a80', artist: 'aitana', title: 'Ex Ex Ex', emoji: '🔁🚫❌' },
+      { id: 'a81', artist: 'aitana', title: 'Hoy Es Tu Cumpleaños', emoji: '🎂📅😢' },
+      { id: 'a82', artist: 'aitana', title: 'Lía', emoji: '💗🚶‍♀️🎶' },
+      { id: 'a83', artist: 'aitana', title: 'La Chica Perfecta', emoji: '👸✨🖼️' },
+      { id: 'a84', artist: 'aitana', title: 'Mon Amour', emoji: '🇫🇷💋🥂' },
+      { id: 'a85', artist: 'aitana', title: 'Otra Vez', emoji: '🔄🥺💔' },
+      { id: 'a86', artist: 'aitana', title: 'Friend De Semana', emoji: '👯‍♀️📅🔥' },
+      // AITANA (completar 100)
+      { id: 'a87', artist: 'aitana', title: "Si Tú La Quieres", emoji: '👀💃😬' },
+      { id: 'a88', artist: 'aitana', title: "Enemigos", emoji: '⚔️👫😔' },
+      { id: 'a89', artist: 'aitana', title: "Más De Lo Que Aposté", emoji: '🎰💯😔' },
+      { id: 'a90', artist: 'aitana', title: "Aunque No Sea Conmigo", emoji: '💞🙏🚶‍♀️' },
+      { id: 'a91', artist: 'aitana', title: "Llueve Sobre Mojado", emoji: '🌧️💧😔' },
+      { id: 'a92', artist: 'aitana', title: "La Canción Que No Quiero Cantarte", emoji: '🎤🚫😢' },
+      { id: 'a93', artist: 'aitana', title: "Las Dudas", emoji: '❓🤔💭' },
+      { id: 'a94', artist: 'aitana', title: "Procuro Olvidarte", emoji: '🧠🚫💔' },
+      { id: 'a95', artist: 'aitana', title: "Chas! Y Aparezco A Tu Lado", emoji: '✨👋🧙‍♂️' },
+      { id: 'a96', artist: 'aitana', title: "Las Vegas", emoji: '🎰🌃🎲' },
+      { id: 'a97', artist: 'aitana', title: "Perdimos La Razón", emoji: '🤯💔⚡' },
+      { id: 'a98', artist: 'aitana', title: "Barro Y Hielo", emoji: '🌫️❄️💔' },
+      { id: 'a99', artist: 'aitana', title: "Estupidez", emoji: '🤦‍♀️🙈🌀' },
+      { id: 'a100', artist: 'aitana', title: "Mándame Un Audio", emoji: '🎙️📱💬' },
 
       // MAFALDA CARDENAL (60)
       { id: 'm1', artist: 'mafalda', title: 'Gigantes', emoji: '🥊🛡️🏔️' },
@@ -468,23 +509,23 @@
       { id: 'm8', artist: 'mafalda', title: 'Cuéntale', emoji: '🗣️🤫💔' },
       { id: 'm9', artist: 'mafalda', title: 'Pa Que Vuelvas', emoji: '🚪🕯️🥺' },
       { id: 'm10', artist: 'mafalda', title: 'Ayer Volví A Llorar', emoji: '😭🌙🛏️' },
-      { id: 'm11', artist: 'mafalda', title: 'No Eres Tú', emoji: '🙅‍♂️🫀🚶‍♀️' },
+      { id: 'm11', artist: 'mafalda', title: 'No Eres Tú', emoji: '🙅‍♂️❤️🚶‍♀️' },
       { id: 'm12', artist: 'mafalda', title: 'Lo Que Nunca Te Dije', emoji: '✉️🔒🥀' },
       { id: 'm13', artist: 'mafalda', title: 'Todo Lo Que No Fuimos', emoji: '💭💔🌧️' },
-      { id: 'm14', artist: 'mafalda', title: 'Solo Tú', emoji: '👤✨🫀' },
+      { id: 'm14', artist: 'mafalda', title: 'Solo Tú', emoji: '👤✨❤️' },
       { id: 'm15', artist: 'mafalda', title: 'Dime Que Sí', emoji: '🥺💬💍' },
       { id: 'm16', artist: 'mafalda', title: 'Que Te Vaya Bien', emoji: '👋✈️🕊️' },
-      { id: 'm17', artist: 'mafalda', title: 'Me Faltas Tú', emoji: '🧩🫀🌧️' },
+      { id: 'm17', artist: 'mafalda', title: 'Me Faltas Tú', emoji: '🧩❤️🌧️' },
       { id: 'm18', artist: 'mafalda', title: 'Te Echo de Menos', emoji: '🧸💭🥀' },
       { id: 'm19', artist: 'mafalda', title: 'Cosas Que Nunca Te Dije', emoji: '📖🔒💧' },
-      { id: 'm20', artist: 'mafalda', title: 'Bailar Contigo', emoji: '💃🕺🪩' },
+      { id: 'm20', artist: 'mafalda', title: 'Bailar Contigo', emoji: '💃🕺🎉' },
       { id: 'm21', artist: 'mafalda', title: 'Mala Idea', emoji: '💡🚫🤦‍♀️' },
       { id: 'm22', artist: 'mafalda', title: 'Otra Vez', emoji: '🔄🥺💔' },
       { id: 'm23', artist: 'mafalda', title: 'No Sé Olvidarte', emoji: '🧠💭🚫' },
       { id: 'm24', artist: 'mafalda', title: 'Ojalá Te Vaya Mal', emoji: '⚡🖤🌧️' },
       { id: 'm25', artist: 'mafalda', title: 'Demasiado Tarde', emoji: '⏰⌛🚪' },
       { id: 'm26', artist: 'mafalda', title: 'Vete a la Luna', emoji: '🌙🚀👋' },
-      { id: 'm27', artist: 'mafalda', title: 'Desde Que No Estás', emoji: '🪑🕯️🌧️' },
+      { id: 'm27', artist: 'mafalda', title: 'Desde Que No Estás', emoji: '🛋️🕯️🌧️' },
       { id: 'm28', artist: 'mafalda', title: 'En Mi Balcón', emoji: '🏙️☕💭' },
       { id: 'm29', artist: 'mafalda', title: 'Suenan Como Tú', emoji: '📻🎶🤔' },
       { id: 'm30', artist: 'mafalda', title: 'No Te Quiero Ver', emoji: '🙈🚪🚫' },
@@ -493,7 +534,7 @@
       { id: 'm33', artist: 'mafalda', title: 'Fuiste Mi Favorito', emoji: '🥇💔👑' },
       { id: 'm34', artist: 'mafalda', title: 'Saber De Ti', emoji: '📲💬❓' },
       { id: 'm35', artist: 'mafalda', title: 'Me Prometiste', emoji: '🤝💔🌧️' },
-      { id: 'm36', artist: 'mafalda', title: 'Ya No Duela', emoji: '🩹❤️‍🩹✨' },
+      { id: 'm36', artist: 'mafalda', title: 'Ya No Duela', emoji: '🤕💖✨' },
       { id: 'm37', artist: 'mafalda', title: 'Nadie Como Yo', emoji: '👑💎💅' },
       { id: 'm38', artist: 'mafalda', title: 'El Mismo Bar', emoji: '🍻🏙️💭' },
       { id: 'm39', artist: 'mafalda', title: 'Te Vi Con Ella', emoji: '👀🚶‍♂️🚶‍♀️' },
@@ -502,7 +543,7 @@
       { id: 'm42', artist: 'mafalda', title: 'Sin Mirar Atrás', emoji: '🏃‍♀️🌅✨' },
       { id: 'm43', artist: 'mafalda', title: 'Silencio', emoji: '🤫🌧️🖤' },
       { id: 'm44', artist: 'mafalda', title: 'Si Decidieras Volver', emoji: '🚪🗝️🥺' },
-      { id: 'm45', artist: 'mafalda', title: 'Tu Nombre En Mi Piel', emoji: '🖊️🫀💭' },
+      { id: 'm45', artist: 'mafalda', title: 'Tu Nombre En Mi Piel', emoji: '🖊️❤️💭' },
       { id: 'm46', artist: 'mafalda', title: 'Para Siempre Jamás', emoji: '⏳💔🖤' },
       { id: 'm47', artist: 'mafalda', title: 'Antes De Que Te Vayas', emoji: '⏰⏳👋' },
       { id: 'm48', artist: 'mafalda', title: 'Llover En Verano', emoji: '☀️🌧️🌦️' },
@@ -513,36 +554,302 @@
       { id: 'm53', artist: 'mafalda', title: 'No Me Olvides', emoji: '🧸🌸🗝️' },
       { id: 'm54', artist: 'mafalda', title: 'Tu Recuerdo', emoji: '💭📸🥀' },
       { id: 'm55', artist: 'mafalda', title: 'Días Grises', emoji: '☁️🌧️☕' },
-      { id: 'm56', artist: 'mafalda', title: 'Si Volviera A Empezar', emoji: '🔄🌅🫀' },
+      { id: 'm56', artist: 'mafalda', title: 'Si Volviera A Empezar', emoji: '🔄🌅❤️' },
       { id: 'm57', artist: 'mafalda', title: 'Ojalá Fueras Tú', emoji: '👤💭✨' },
       { id: 'm58', artist: 'mafalda', title: 'Fotos Antiguas', emoji: '📸🖼️💔' },
       { id: 'm59', artist: 'mafalda', title: 'No Me Mientas', emoji: '🤥🗣️🚫' },
       { id: 'm60', artist: 'mafalda', title: 'Última Carta', emoji: '✉️✍️🖤' },
       // MAFALDA (añadidas)
       { id: 'm61', artist: 'mafalda', title: 'Apaga la Luz', emoji: '💡🌙🛏️' },
-      { id: 'm62', artist: 'mafalda', title: 'Déjame Entrar', emoji: '🚪🫴🥺' },
-      { id: 'm63', artist: 'mafalda', title: 'Normal', emoji: '🙂🫠🌀' },
+      { id: 'm62', artist: 'mafalda', title: 'Déjame Entrar', emoji: '🚪🤲🥺' },
+      { id: 'm63', artist: 'mafalda', title: 'Normal', emoji: '🙂😵🌀' },
       { id: 'm64', artist: 'mafalda', title: 'Solo Un Nombre', emoji: '🏷️🗣️💔' },
-      { id: 'm65', artist: 'mafalda', title: 'Ella Era Yo', emoji: '👩🪞💭' },
-      { id: 'm66', artist: 'mafalda', title: 'Mi Chico', emoji: '👦💕🫶' },
+      { id: 'm65', artist: 'mafalda', title: 'Ella Era Yo', emoji: '👩🖼️💭' },
+      { id: 'm66', artist: 'mafalda', title: 'Mi Chico', emoji: '👦💕💞' },
       { id: 'm67', artist: 'mafalda', title: 'No Hablamos El Mismo Idioma', emoji: '🗣️🙉🌍' },
-      { id: 'm68', artist: 'mafalda', title: 'Todo Es Azul', emoji: '🟦🌊💙' },
+      { id: 'm68', artist: 'mafalda', title: 'Todo Es Azul', emoji: '🔷🌊💙' },
       { id: 'm69', artist: 'mafalda', title: 'Tie My Shoes', emoji: '👟🎀🧵' },
       { id: 'm70', artist: 'mafalda', title: 'No Estábamos Juntos', emoji: '🙅‍♀️👫💭' },
-      { id: 'm71', artist: 'mafalda', title: 'Carolina (Cuídale Mejor Que Yo)', emoji: '👩‍🦰🫶🥀' },
+      { id: 'm71', artist: 'mafalda', title: 'Carolina (Cuídale Mejor Que Yo)', emoji: '👩‍🦰💞🥀' },
       { id: 'm72', artist: 'mafalda', title: 'Venecia', emoji: '🛶🇮🇹💔' },
-      { id: 'm73', artist: 'mafalda', title: 'Para Mi Mejor Amiga', emoji: '👯‍♀️💌🫂' },
+      { id: 'm73', artist: 'mafalda', title: 'Para Mi Mejor Amiga', emoji: '👯‍♀️💌🤗' },
       { id: 'm74', artist: 'mafalda', title: 'Esto Iba A Ser Una Canción De Amor', emoji: '💌🎶🥀' },
-      { id: 'm75', artist: 'mafalda', title: 'Superhumano', emoji: '🦸‍♀️💪🫀' },
+      { id: 'm75', artist: 'mafalda', title: 'Superhumano', emoji: '🦸‍♀️💪❤️' },
       { id: 'm76', artist: 'mafalda', title: 'Nada Mal', emoji: '👌🙂✨' },
       { id: 'm77', artist: 'mafalda', title: 'La Historia De Nosotros', emoji: '📖👫💭' },
-      { id: 'm78', artist: 'mafalda', title: 'Qué Tiene?', emoji: '❓🤔🫀' },
-      { id: 'm79', artist: 'mafalda', title: 'Un Lunes Más', emoji: '📅😮‍💨☁️' },
+      { id: 'm78', artist: 'mafalda', title: 'Qué Tiene?', emoji: '❓🤔❤️' },
+      { id: 'm79', artist: 'mafalda', title: 'Un Lunes Más', emoji: '📅😮☁️' },
       { id: 'm80', artist: 'mafalda', title: 'Un Segundo', emoji: '⏱️1️⃣💨' },
-      { id: 'm81', artist: 'mafalda', title: 'Blue Jeans', emoji: '👖🟦🕺' },
-      { id: 'm82', artist: 'mafalda', title: 'Creo Que Te Quiero', emoji: '🤔💘🫣' },
+      { id: 'm81', artist: 'mafalda', title: 'Blue Jeans', emoji: '👖🔷🕺' },
+      { id: 'm82', artist: 'mafalda', title: 'Creo Que Te Quiero', emoji: '🤔💘🙈' },
       { id: 'm83', artist: 'mafalda', title: 'Algo Paranormal', emoji: '👻🔮✨' },
-      { id: 'm84', artist: 'mafalda', title: 'Canción De Amor', emoji: '💌🎵❤️' }
+      { id: 'm84', artist: 'mafalda', title: 'Canción De Amor', emoji: '💌🎵❤️' },
+      // MAFALDA (singles anteriores al álbum)
+      { id: 'm85', artist: 'mafalda', title: 'Pa Que Me Cantes En El Coche', emoji: '🚘🎤🎶' },
+      { id: 'm86', artist: 'mafalda', title: 'A Ella La Llevas A París', emoji: '🗼👩💔' },
+      { id: 'm87', artist: 'mafalda', title: 'Ni Hablamos', emoji: '🤐🙅‍♀️📵' },
+      { id: 'm88', artist: 'mafalda', title: 'Si Tiene Que Ser Será', emoji: '🤷‍♀️🔮🍀' },
+      // MAFALDA (completar 100)
+      { id: 'm89', artist: 'mafalda', title: "Fuimos Amigos", emoji: '👫🔙🥀' },
+      { id: 'm90', artist: 'mafalda', title: "Tus Manías", emoji: '🤪🙃💭' },
+      { id: 'm91', artist: 'mafalda', title: "Me Gustaría Volver", emoji: '⏪🥺🚪' },
+      { id: 'm92', artist: 'mafalda', title: "Me Gustas Más Que Un Big Mac", emoji: '🍔💘😍' },
+      { id: 'm93', artist: 'mafalda', title: "Rotos", emoji: '💔🔨🧩' },
+      { id: 'm94', artist: 'mafalda', title: "El Segundo Amor", emoji: '2️⃣❤️🌹' },
+      { id: 'm95', artist: 'mafalda', title: "No Lo Subas A Instagram", emoji: '📵📸🤫' },
+      { id: 'm96', artist: 'mafalda', title: "Narcos", emoji: '🕶️🌃🚨' },
+      { id: 'm97', artist: 'mafalda', title: "Solo Sé Que No Sé Qué", emoji: '❓🤷‍♀️💭' },
+      { id: 'm98', artist: 'mafalda', title: "Vuelve (Remix)", emoji: '🔙🔁🥺' },
+      { id: 'm99', artist: 'mafalda', title: "Llámame Dentro De 5 Años", emoji: '📞5️⃣📅' },
+      { id: 'm100', artist: 'mafalda', title: "Mis Botas Horteras", emoji: '👢✨🤠' },
+
+      // DESAMOR (otros cantantes)
+      { id: 'd1', artist: 'desamor', singer: 'Alejandro Sanz', title: 'Corazón Partío', emoji: '💔❤️✂️' },
+      { id: 'd2', artist: 'desamor', singer: 'Alejandro Sanz', title: 'Mi Soledad Y Yo', emoji: '🚶‍♂️🌧️🖤' },
+      { id: 'd3', artist: 'desamor', singer: 'Shakira', title: 'Te Felicito', emoji: '👏🥀💔' },
+      { id: 'd4', artist: 'desamor', singer: 'Shakira', title: 'Monotonía', emoji: '🔁😶🥀' },
+      { id: 'd5', artist: 'desamor', singer: 'Shakira', title: 'Pa Tipos Como Tú', emoji: '🚫🤡👋' },
+      { id: 'd6', artist: 'desamor', singer: 'Shakira', title: 'Copa Vacía', emoji: '🥂🕳️💔' },
+      { id: 'd7', artist: 'desamor', singer: 'Morat', title: 'Besos En Guerra', emoji: '💋⚔️💔' },
+      { id: 'd8', artist: 'desamor', singer: 'Morat', title: 'Cuánto Me Duele', emoji: '😭🤕💔' },
+      { id: 'd9', artist: 'desamor', singer: 'Morat', title: 'Amor Con Hielo', emoji: '❄️❤️🥃' },
+      { id: 'd10', artist: 'desamor', singer: 'Morat', title: 'Cómo Te Atreves', emoji: '😡❓🚪' },
+      { id: 'd11', artist: 'desamor', singer: 'Manuel Turizo', title: 'La Bachata', emoji: '🎶😢🕺' },
+      { id: 'd12', artist: 'desamor', singer: 'Karol G', title: 'Mientras Me Curo Del Cora', emoji: '🤕💖⏳' },
+      { id: 'd13', artist: 'desamor', singer: 'Bad Bunny', title: 'Amorfoda', emoji: '🙄🐰☠️' },
+      { id: 'd14', artist: 'desamor', singer: 'Reik', title: 'Me Niego', emoji: '🙅‍♂️💔🔥' },
+      { id: 'd15', artist: 'desamor', singer: 'Ha*Ash', title: 'Perdón, Perdón', emoji: '🙏😔🥀' },
+      { id: 'd16', artist: 'desamor', singer: 'Ha*Ash', title: 'Estés Donde Estés', emoji: '📍💭🥀' },
+      { id: 'd17', artist: 'desamor', singer: 'Camila', title: 'Mientes', emoji: '🤥💔🗣️' },
+      { id: 'd18', artist: 'desamor', singer: 'Maná', title: 'Clavado En Un Bar', emoji: '🍺📌😔' },
+      { id: 'd19', artist: 'desamor', singer: 'Jesse & Joy', title: 'Espacio Sideral', emoji: '🚀🌌💔' },
+      { id: 'd20', artist: 'desamor', singer: 'Pablo Alborán', title: 'Saturno', emoji: '🌠🌙💔' },
+      { id: 'd21', artist: 'desamor', singer: 'Pablo Alborán', title: 'Perdóname', emoji: '🙏🥺💔' },
+      { id: 'd22', artist: 'desamor', singer: 'Beret', title: 'Vuelve', emoji: '🔙🥺🚪' },
+      { id: 'd23', artist: 'desamor', singer: 'Leiva', title: 'Terriblemente Cruel', emoji: '😔🗡️🖤' },
+      { id: 'd24', artist: 'desamor', singer: 'Sebastián Yatra', title: 'Traicionera', emoji: '🐍💔🔪' },
+      { id: 'd25', artist: 'desamor', singer: 'Adele', title: 'Someone Like You', emoji: '👤🎹😢' },
+      { id: 'd26', artist: 'desamor', singer: 'Adele', title: 'Easy On Me', emoji: '🕊️🌧️💞' },
+      { id: 'd27', artist: 'desamor', singer: 'Sam Smith', title: 'Too Good At Goodbyes', emoji: '👋🚪🧱' },
+      { id: 'd28', artist: 'desamor', singer: 'Selena Gomez', title: 'Lose You To Love Me', emoji: '👻❤️🤕🔙' },
+      { id: 'd29', artist: 'desamor', singer: 'Olivia Rodrigo', title: 'Drivers License', emoji: '🚗📇🌃' },
+      { id: 'd30', artist: 'desamor', singer: 'Bruno Mars', title: 'When I Was Your Man', emoji: '💍😔🎹' },
+      { id: 'd31', artist: 'desamor', singer: 'Billie Eilish', title: "When The Party's Over", emoji: '🎉🔇🖤' },
+      { id: 'd32', artist: 'desamor', singer: 'Lewis Capaldi', title: 'Someone You Loved', emoji: '💔🛏️👤' },
+      // DESAMOR (más canciones)
+      { id: 'd33', artist: 'desamor', singer: "Alejandro Sanz", title: "Cuando Nadie Me Ve", emoji: '🙈🌙💔' },
+      { id: 'd34', artist: 'desamor', singer: "Enrique Iglesias", title: "Lloro Por Ti", emoji: '😭🙏💧' },
+      { id: 'd35', artist: 'desamor', singer: "Luis Miguel", title: "Ahora Te Puedes Marchar", emoji: '🚶‍♀️👋🚪' },
+      { id: 'd36', artist: 'desamor', singer: "Luis Miguel", title: "Culpable O No", emoji: '⚖️❓💔' },
+      { id: 'd37', artist: 'desamor', singer: "Juan Gabriel", title: "Amor Eterno", emoji: '♾️🕊️🖤' },
+      { id: 'd38', artist: 'desamor', singer: "José José", title: "El Triste", emoji: '😢🎤🌧️' },
+      { id: 'd39', artist: 'desamor', singer: "José José", title: "Lo Pasado, Pasado", emoji: '⏪🗑️✋' },
+      { id: 'd40', artist: 'desamor', singer: "Vicente Fernández", title: "Volver, Volver", emoji: '🔙🔁🥺' },
+      { id: 'd41', artist: 'desamor', singer: "Vicente Fernández", title: "Por Tu Maldito Amor", emoji: '😤🍺💔' },
+      { id: 'd42', artist: 'desamor', singer: "Alejandro Fernández", title: "Me Dediqué A Perderte", emoji: '🔍❌💔' },
+      { id: 'd43', artist: 'desamor', singer: "Alejandro Fernández", title: "Si Tú Supieras", emoji: '🤷‍♂️💭💔' },
+      { id: 'd44', artist: 'desamor', singer: "Marc Anthony", title: "Y Cómo Es Él", emoji: '👨❓😢' },
+      { id: 'd45', artist: 'desamor', singer: "Ricky Martin", title: "Perdido Sin Ti", emoji: '🧭❓💔' },
+      { id: 'd46', artist: 'desamor', singer: "Shakira", title: "La Tortura", emoji: '🌀🔪💔' },
+      { id: 'd47', artist: 'desamor', singer: "C. Tangana", title: "Tú Me Dejaste De Querer", emoji: '👈🚫❤️' },
+      { id: 'd48', artist: 'desamor', singer: "Julieta Venegas", title: "Me Voy", emoji: '🚶‍♀️🧳👋' },
+      { id: 'd49', artist: 'desamor', singer: "Julieta Venegas", title: "Lento", emoji: '🐢🌧️💔' },
+      { id: 'd50', artist: 'desamor', singer: "Jesse & Joy", title: "Ya No Quiero Tu Amor", emoji: '🚫❤️👋' },
+      { id: 'd51', artist: 'desamor', singer: "Reik", title: "Ya Me Enteré", emoji: '👂📱💔' },
+      { id: 'd52', artist: 'desamor', singer: "Reik", title: "Yo Quisiera", emoji: '🙏💭🥀' },
+      { id: 'd53', artist: 'desamor', singer: "Sin Bandera", title: "Kilómetros", emoji: '🛣️📏💔' },
+      { id: 'd54', artist: 'desamor', singer: "Camila", title: "Todo Cambió", emoji: '🔄⏳😔' },
+      { id: 'd55', artist: 'desamor', singer: "Los Ángeles Azules", title: "Nunca Es Suficiente", emoji: '🔁😞♾️' },
+      { id: 'd56', artist: 'desamor', singer: "Christian Nodal", title: "Adiós Amor", emoji: '👋❤️🚪' },
+      { id: 'd57', artist: 'desamor', singer: "Christian Nodal", title: "Ya No Somos Ni Seremos", emoji: '❌👫⏳' },
+      { id: 'd58', artist: 'desamor', singer: "Christian Nodal", title: "De Los Besos Que Te Di", emoji: '💋🔙🥀' },
+      { id: 'd59', artist: 'desamor', singer: "Paulina Rubio", title: "Te Quise Tanto", emoji: '💘⏪😢' },
+      { id: 'd60', artist: 'desamor', singer: "Thalía", title: "Equivocada", emoji: '❌🙅‍♀️💔' },
+      { id: 'd61', artist: 'desamor', singer: "Selena", title: "Como La Flor", emoji: '🌹🥀😢' },
+      { id: 'd62', artist: 'desamor', singer: "Selena", title: "No Me Queda Más", emoji: '😞🚪💔' },
+      { id: 'd63', artist: 'desamor', singer: "Jenni Rivera", title: "Ya Lo Sé", emoji: '🤫💡💔' },
+      { id: 'd64', artist: 'desamor', singer: "Maluma", title: "Hawái", emoji: '🏝️📱🥺' },
+      { id: 'd65', artist: 'desamor', singer: "Maluma", title: "Borró Cassette", emoji: '📼🗑️💔' },
+      { id: 'd66', artist: 'desamor', singer: "Rauw Alejandro", title: "Desesperados", emoji: '😰📞🔥' },
+      { id: 'd67', artist: 'desamor', singer: "Nicky Jam", title: "El Perdón", emoji: '🙏🥺💍' },
+      { id: 'd68', artist: 'desamor', singer: "Ela Taubert", title: "¿Cómo Pasó?", emoji: '😳❓💔' },
+      { id: 'd69', artist: 'desamor', singer: "Ela Taubert", title: "¿Para Qué?", emoji: '❓🚫🔙' },
+      { id: 'd70', artist: 'desamor', singer: "Mon Laferte", title: "Tu Falta De Querer", emoji: '🚫❤️🌧️' },
+      { id: 'd71', artist: 'desamor', singer: "Carla Morrison", title: "Déjenme Llorar", emoji: '😭🛑💧' },
+      { id: 'd72', artist: 'desamor', singer: "La Oreja de Van Gogh", title: "Rosas", emoji: '🌹🥀💔' },
+      { id: 'd73', artist: 'desamor', singer: "La Oreja de Van Gogh", title: "Cuídate", emoji: '🧣🙏😢' },
+      { id: 'd74', artist: 'desamor', singer: "La Oreja de Van Gogh", title: "La Playa", emoji: '🏖️🌊💭' },
+      { id: 'd75', artist: 'desamor', singer: "Amaral", title: "Sin Ti No Soy Nada", emoji: '🚫👤🕳️' },
+      { id: 'd76', artist: 'desamor', singer: "Estopa", title: "Pastillas De Freno", emoji: '💊🛑🚗' },
+      { id: 'd77', artist: 'desamor', singer: "Joaquín Sabina", title: "19 Días Y 500 Noches", emoji: '1️⃣9️⃣📅🌙' },
+      { id: 'd78', artist: 'desamor', singer: "Joaquín Sabina", title: "Y Nos Dieron Las Diez", emoji: '🕙🍷🌃' },
+      { id: 'd79', artist: 'desamor', singer: "Julio Iglesias", title: "Me Olvidé De Vivir", emoji: '🤯⌛🥀' },
+      { id: 'd80', artist: 'desamor', singer: "Mecano", title: "Me Cuesta Tanto Olvidarte", emoji: '🧠🚫💔' },
+      { id: 'd81', artist: 'desamor', singer: "Malú", title: "Aprendiz", emoji: '📚🥀💔' },
+      { id: 'd82', artist: 'desamor', singer: "Marta Sánchez", title: "Desesperada", emoji: '😰🔥📞' },
+      { id: 'd83', artist: 'desamor', singer: "Beret", title: "Lo Siento", emoji: '🙇‍♂️😔🥀' },
+      { id: 'd84', artist: 'desamor', singer: "Chenoa", title: "Cuando Tú Vas", emoji: '🚶‍♂️💭🔙' },
+      { id: 'd85', artist: 'desamor', singer: "Adele", title: "Hello", emoji: '📞👋🌧️' },
+      { id: 'd86', artist: 'desamor', singer: "Adele", title: "Rolling In The Deep", emoji: '🌊🔥💔' },
+      { id: 'd87', artist: 'desamor', singer: "Adele", title: "Set Fire To The Rain", emoji: '🔥🌧️💔' },
+      { id: 'd88', artist: 'desamor', singer: "Sam Smith", title: "Stay With Me", emoji: '🛏️🙏🌙' },
+      { id: 'd89', artist: 'desamor', singer: "Olivia Rodrigo", title: "Vampire", emoji: '🧛‍♀️🦇💔' },
+      { id: 'd90', artist: 'desamor', singer: "Olivia Rodrigo", title: "Traitor", emoji: '🐍🔪😢' },
+      { id: 'd91', artist: 'desamor', singer: "Taylor Swift", title: "All Too Well", emoji: '🧣🍂💔' },
+      { id: 'd92', artist: 'desamor', singer: "Taylor Swift", title: "Back To December", emoji: '🔙❄️🥀' },
+      { id: 'd93', artist: 'desamor', singer: "Taylor Swift", title: "We Are Never Ever Getting Back Together", emoji: '🚫🔙🙅‍♀️' },
+      { id: 'd94', artist: 'desamor', singer: "Taylor Swift", title: "Dear John", emoji: '✉️👨😡' },
+      { id: 'd95', artist: 'desamor', singer: "Ed Sheeran", title: "Happier", emoji: '😊😢💔' },
+      { id: 'd96', artist: 'desamor', singer: "Billie Eilish", title: "Happier Than Ever", emoji: '😡🎸😭' },
+      { id: 'd97', artist: 'desamor', singer: "Lana Del Rey", title: "Video Games", emoji: '🎮🌴🖤' },
+      { id: 'd98', artist: 'desamor', singer: "Lana Del Rey", title: "Summertime Sadness", emoji: '☀️😢🌴' },
+      { id: 'd99', artist: 'desamor', singer: "The Weeknd", title: "Call Out My Name", emoji: '📣📛🌙' },
+      { id: 'd100', artist: 'desamor', singer: "The Weeknd", title: "Save Your Tears", emoji: '😢💧🚫' },
+      { id: 'd101', artist: 'desamor', singer: "Rihanna", title: "Stay", emoji: '🙏🏠⏳' },
+      { id: 'd102', artist: 'desamor', singer: "Rihanna", title: "Unfaithful", emoji: '🤥💔🌑' },
+      { id: 'd103', artist: 'desamor', singer: "Beyoncé", title: "Irreplaceable", emoji: '👢🧳🚪' },
+      { id: 'd104', artist: 'desamor', singer: "Whitney Houston", title: "I Will Always Love You", emoji: '🕊️❤️👋' },
+      { id: 'd105', artist: 'desamor', singer: "Celine Dion", title: "All By Myself", emoji: '😢🛋️🎤' },
+      { id: 'd106', artist: 'desamor', singer: "Mariah Carey", title: "Without You", emoji: '🚫👤💔' },
+      { id: 'd107', artist: 'desamor', singer: "Elton John", title: "Sorry Seems To Be The Hardest Word", emoji: '🙏🎹😔' },
+      { id: 'd108', artist: 'desamor', singer: "Coldplay", title: "The Scientist", emoji: '🔬🔙❓' },
+      { id: 'd109', artist: 'desamor', singer: "Gotye", title: "Somebody That I Used To Know", emoji: '👤⏪🥀' },
+      { id: 'd110', artist: 'desamor', singer: "Kelly Clarkson", title: "Since U Been Gone", emoji: '🎉🎤💪' },
+      { id: 'd111', artist: 'desamor', singer: "P!nk", title: "Just Give Me A Reason", emoji: '🤝❓💔' },
+      { id: 'd112', artist: 'desamor', singer: "Dua Lipa", title: "Don't Start Now", emoji: '🛑💃🚫' },
+      { id: 'd113', artist: 'desamor', singer: "Ariana Grande", title: "Thank U, Next", emoji: '👋➡️💅' },
+      { id: 'd114', artist: 'desamor', singer: "Miley Cyrus", title: "Wrecking Ball", emoji: '🏗️⚪😭' },
+      { id: 'd115', artist: 'desamor', singer: "Miley Cyrus", title: "Flowers", emoji: '💐🕺💪' },
+      { id: 'd116', artist: 'desamor', singer: "Lewis Capaldi", title: "Before You Go", emoji: '⏳🚪😢' },
+      { id: 'd117', artist: 'desamor', singer: "Harry Styles", title: "Falling", emoji: '🍂⬇️😢' },
+      { id: 'd118', artist: 'desamor', singer: "Demi Lovato", title: "Stone Cold", emoji: '🗿❄️😢' },
+      { id: 'd119', artist: 'desamor', singer: "Gracie Abrams", title: "I Miss You, I'm Sorry", emoji: '📱💭😔' },
+      { id: 'd120', artist: 'desamor', singer: "SZA", title: "Kill Bill", emoji: '🔪👰🖤' },
+      { id: 'd121', artist: 'desamor', singer: "Bruno Mars", title: "Grenade", emoji: '💣🚫💔' },
+      { id: 'd122', artist: 'desamor', singer: "Bruno Mars", title: "Talking To The Moon", emoji: '🌙🗣️😔' },
+      { id: 'd123', artist: 'desamor', singer: "Passenger", title: "Let Her Go", emoji: '🚪👩🌧️' },
+      { id: 'd124', artist: 'desamor', singer: "James Arthur", title: "Impossible", emoji: '🚫🔙💔' },
+      { id: 'd125', artist: 'desamor', singer: "Joji", title: "Slow Dancing In The Dark", emoji: '🌃💃😔' },
+      { id: 'd126', artist: 'desamor', singer: "Amy Winehouse", title: "Back To Black", emoji: '⬛🔙🖤' },
+      { id: 'd127', artist: 'desamor', singer: "Sinéad O'Connor", title: "Nothing Compares 2 U", emoji: '🚫⚖️😢' },
+      { id: 'd128', artist: 'desamor', singer: "Fleetwood Mac", title: "Go Your Own Way", emoji: '🛣️🚶‍♂️👋' },
+      { id: 'd129', artist: 'desamor', singer: "Guns N' Roses", title: "November Rain", emoji: '🍁🌧️🎸' },
+      { id: 'd130', artist: 'desamor', singer: "Boyz II Men", title: "End Of The Road", emoji: '🛣️🔚😢' },
+      { id: 'd131', artist: 'desamor', singer: "Roxette", title: "It Must Have Been Love", emoji: '💘⏪❄️' },
+      { id: 'd132', artist: 'desamor', singer: "Gloria Gaynor", title: "I Will Survive", emoji: '💪🔥🚪' },
+      { id: 'd133', artist: 'desamor', singer: "Tina Turner", title: "What's Love Got To Do With It", emoji: '❓❤️🤷‍♀️' },
+      { id: 'd134', artist: 'desamor', singer: "Alanis Morissette", title: "You Oughta Know", emoji: '😡☎️💔' },
+      // DESAMOR (tercera tanda)
+      { id: 'd135', artist: 'desamor', singer: "Alejandro Sanz", title: "Y, ¿Si Fuera Ella?", emoji: '👩❓💭' },
+      { id: 'd136', artist: 'desamor', singer: "Alejandro Sanz", title: "Un Zombie A La Intemperie", emoji: '🧟🌧️💔' },
+      { id: 'd137', artist: 'desamor', singer: "Luis Fonsi", title: "Nada Es Para Siempre", emoji: '♾️🚫⏳' },
+      { id: 'd138', artist: 'desamor', singer: "Ricardo Montaner", title: "Me Va A Extrañar", emoji: '😏💭🔙' },
+      { id: 'd139', artist: 'desamor', singer: "Franco De Vita", title: "Un Buen Perdedor", emoji: '🏅😔🥀' },
+      { id: 'd140', artist: 'desamor', singer: "Chayanne", title: "Y Tú Te Vas", emoji: '🚶‍♀️👋😢' },
+      { id: 'd141', artist: 'desamor', singer: "Marco Antonio Solís", title: "Si No Te Hubieras Ido", emoji: '🚪🙏😭' },
+      { id: 'd142', artist: 'desamor', singer: "Los Bukis", title: "Tu Cárcel", emoji: '⛓️💔🔒' },
+      { id: 'd143', artist: 'desamor', singer: "Los Temerarios", title: "Te Hice Mal", emoji: '😔🤕💔' },
+      { id: 'd144', artist: 'desamor', singer: "Los Tigres del Norte", title: "La Puerta Negra", emoji: '🚪⚫😢' },
+      { id: 'd145', artist: 'desamor', singer: "Juan Gabriel", title: "Se Me Olvidó Otra Vez", emoji: '🤦‍♂️🧠🔁' },
+      { id: 'd146', artist: 'desamor', singer: "Rocío Dúrcal", title: "La Gata Bajo La Lluvia", emoji: '🐈🌧️🥺' },
+      { id: 'd147', artist: 'desamor', singer: "Armando Manzanero", title: "Esta Tarde Vi Llover", emoji: '🌧️🌇💭' },
+      { id: 'd148', artist: 'desamor', singer: "Luis Miguel", title: "Hasta Que Me Olvides", emoji: '⏳🧠🚫' },
+      { id: 'd149', artist: 'desamor', singer: "Camilo Sesto", title: "Vivir Así Es Morir De Amor", emoji: '⚰️❤️🥀' },
+      { id: 'd150', artist: 'desamor', singer: "Raphael", title: "Estuve Enamorado", emoji: '🙈💘⏪' },
+      { id: 'd151', artist: 'desamor', singer: "Roberto Carlos", title: "Detalles", emoji: '🔎🧩💔' },
+      { id: 'd152', artist: 'desamor', singer: "Grupo Frontera", title: "Un x100to", emoji: '❌💯💔' },
+      { id: 'd153', artist: 'desamor', singer: "Carín León", title: "Que Vuelvas", emoji: '🔙🙏🥺' },
+      { id: 'd154', artist: 'desamor', singer: "Juanes", title: "La Camisa Negra", emoji: '👕🖤🔥' },
+      { id: 'd155', artist: 'desamor', singer: "Juanes", title: "Fotografía", emoji: '📷💭🥀' },
+      { id: 'd156', artist: 'desamor', singer: "Wisin & Yandel", title: "Abusadora", emoji: '😈⛓️💔' },
+      { id: 'd157', artist: 'desamor', singer: "Aventura", title: "Obsesión", emoji: '👁️🔁🖤' },
+      { id: 'd158', artist: 'desamor', singer: "Aventura", title: "Dile Al Amor", emoji: '💬❤️🚪' },
+      { id: 'd159', artist: 'desamor', singer: "Aventura", title: "El Perdedor", emoji: '🏳️😔📉' },
+      { id: 'd160', artist: 'desamor', singer: "Prince Royce", title: "Corazón Sin Cara", emoji: '❤️🎭❓' },
+      { id: 'd161', artist: 'desamor', singer: "Bad Bunny", title: "Si Estuviésemos Juntos", emoji: '🤝💭🌧️' },
+      { id: 'd162', artist: 'desamor', singer: "Sebastián Yatra", title: "Pareja Del Año", emoji: '🏆👫💔' },
+      { id: 'd163', artist: 'desamor', singer: "Reik", title: "Noviembre Sin Ti", emoji: '🍂📅🥀' },
+      { id: 'd164', artist: 'desamor', singer: "Sin Bandera", title: "Que Lástima", emoji: '😞🙏💔' },
+      { id: 'd165', artist: 'desamor', singer: "RBD", title: "Solo Quédate En Silencio", emoji: '🤫🌙🖤' },
+      { id: 'd166', artist: 'desamor', singer: "Ha*Ash", title: "Lo Aprendí De Ti", emoji: '📖👤💔' },
+      { id: 'd167', artist: 'desamor', singer: "Laura Pausini", title: "Se Fue", emoji: '🚶‍♂️🛤️😢' },
+      { id: 'd168', artist: 'desamor', singer: "Mecano", title: "Hoy No Me Puedo Levantar", emoji: '🛏️😩🌧️' },
+      { id: 'd169', artist: 'desamor', singer: "Hombres G", title: "Sufre Mamón", emoji: '😭👈🤡' },
+      { id: 'd170', artist: 'desamor', singer: "Hombres G", title: "Devuélveme A Mi Chica", emoji: '😡👧🔙' },
+      { id: 'd171', artist: 'desamor', singer: "Los Secretos", title: "Pero A Tu Lado", emoji: '🤝❓💭' },
+      { id: 'd172', artist: 'desamor', singer: "Los Secretos", title: "Sobre Un Vidrio Mojado", emoji: '🌧️💧😔' },
+      { id: 'd173', artist: 'desamor', singer: "Fito & Fitipaldis", title: "Me Equivocaría Otra Vez", emoji: '🔁🤷‍♂️💔' },
+      { id: 'd174', artist: 'desamor', singer: "Ricky Martin", title: "Tal Vez", emoji: '🤔💭💔' },
+      { id: 'd175', artist: 'desamor', singer: "Alejandro Fernández", title: "Hoy Tengo Ganas De Ti", emoji: '🌙🥺📞' },
+      { id: 'd176', artist: 'desamor', singer: "Ana Gabriel", title: "Evidencias", emoji: '🔍💔🧾' },
+      { id: 'd177', artist: 'desamor', singer: "Ana Gabriel", title: "Ay Amor", emoji: '😩❤️🌧️' },
+      { id: 'd178', artist: 'desamor', singer: "Rocío Jurado", title: "Se Nos Rompió El Amor", emoji: '💔🧩😢' },
+      { id: 'd179', artist: 'desamor', singer: "Mónica Naranjo", title: "Sobreviviré", emoji: '💪🔥🚪' },
+      { id: 'd180', artist: 'desamor', singer: "David Bustamante", title: "Para Dejar De Quererte", emoji: '🛑❤️🧠' },
+      { id: 'd181', artist: 'desamor', singer: "Adele", title: "Turning Tables", emoji: '🔃🙅‍♀️💔' },
+      { id: 'd182', artist: 'desamor', singer: "Adele", title: "Don't You Remember", emoji: '🧠❓💭' },
+      { id: 'd183', artist: 'desamor', singer: "Adele", title: "Love In The Dark", emoji: '🌑💔🕯️' },
+      { id: 'd184', artist: 'desamor', singer: "Taylor Swift", title: "Last Kiss", emoji: '💋🔚🥀' },
+      { id: 'd185', artist: 'desamor', singer: "Taylor Swift", title: "Champagne Problems", emoji: '🍾💍😢' },
+      { id: 'd186', artist: 'desamor', singer: "Taylor Swift", title: "Should've Said No", emoji: '🙅‍♀️🙏😡' },
+      { id: 'd187', artist: 'desamor', singer: "Taylor Swift", title: "Teardrops On My Guitar", emoji: '💧🎸😔' },
+      { id: 'd188', artist: 'desamor', singer: "Olivia Rodrigo", title: "Good 4 U", emoji: '😒👏🔥' },
+      { id: 'd189', artist: 'desamor', singer: "Olivia Rodrigo", title: "Logical", emoji: '🧠🙄💔' },
+      { id: 'd190', artist: 'desamor', singer: "Sam Smith", title: "I'm Not The Only One", emoji: '👥🤥💔' },
+      { id: 'd191', artist: 'desamor', singer: "Ed Sheeran", title: "Give Me Love", emoji: '🙏❤️😔' },
+      { id: 'd192', artist: 'desamor', singer: "Ed Sheeran", title: "Don't", emoji: '🚫👤😡' },
+      { id: 'd193', artist: 'desamor', singer: "Justin Bieber", title: "Love Yourself", emoji: '🙄❤️👋' },
+      { id: 'd194', artist: 'desamor', singer: "Charlie Puth", title: "We Don't Talk Anymore", emoji: '🔇📵💔' },
+      { id: 'd195', artist: 'desamor', singer: "Charlie Puth", title: "Attention", emoji: '👀😒💔' },
+      { id: 'd196', artist: 'desamor', singer: "Dua Lipa", title: "New Rules", emoji: '📜🚫📵' },
+      { id: 'd197', artist: 'desamor', singer: "Halsey", title: "Without Me", emoji: '🚶‍♀️🔥👋' },
+      { id: 'd198', artist: 'desamor', singer: "Lady Gaga", title: "Million Reasons", emoji: '💯🎹😢' },
+      { id: 'd199', artist: 'desamor', singer: "Katy Perry", title: "The One That Got Away", emoji: '🏃‍♀️💔🌅' },
+      { id: 'd200', artist: 'desamor', singer: "Katy Perry", title: "Thinking Of You", emoji: '💭👤🥀' },
+      { id: 'd201', artist: 'desamor', singer: "Maroon 5", title: "Payphone", emoji: '☎️💸💔' },
+      { id: 'd202', artist: 'desamor', singer: "Maroon 5", title: "She Will Be Loved", emoji: '🌧️💞🚪' },
+      { id: 'd203', artist: 'desamor', singer: "OneRepublic", title: "Apologize", emoji: '🙏😞⏰' },
+      { id: 'd204', artist: 'desamor', singer: "Blink-182", title: "I Miss You", emoji: '📱💭😢' },
+      { id: 'd205', artist: 'desamor', singer: "Avril Lavigne", title: "When You're Gone", emoji: '🚪🌧️😢' },
+      { id: 'd206', artist: 'desamor', singer: "Avril Lavigne", title: "My Happy Ending", emoji: '🎬💔🌅' },
+      { id: 'd207', artist: 'desamor', singer: "Evanescence", title: "My Immortal", emoji: '👻🕯️😢' },
+      { id: 'd208', artist: 'desamor', singer: "Britney Spears", title: "Everytime", emoji: '🕰️😭🙏' },
+      { id: 'd209', artist: 'desamor', singer: "Backstreet Boys", title: "Incomplete", emoji: '🧩❌💔' },
+      { id: 'd210', artist: 'desamor', singer: "Backstreet Boys", title: "Show Me The Meaning Of Being Lonely", emoji: '🏝️😔❓' },
+      { id: 'd211', artist: 'desamor', singer: "NSYNC", title: "Bye Bye Bye", emoji: '👋👋👋' },
+      { id: 'd212', artist: 'desamor', singer: "Elvis Presley", title: "Heartbreak Hotel", emoji: '🏨💔🌃' },
+      { id: 'd213', artist: 'desamor', singer: "The Beatles", title: "Yesterday", emoji: '⏪🌅😔' },
+      { id: 'd214', artist: 'desamor', singer: "Pink Floyd", title: "Wish You Were Here", emoji: '📍🌫️💭' },
+      { id: 'd215', artist: 'desamor', singer: "R.E.M.", title: "Everybody Hurts", emoji: '🌧️🤝😭' },
+      { id: 'd216', artist: 'desamor', singer: "U2", title: "With Or Without You", emoji: '🚫🔁❤️' },
+      { id: 'd217', artist: 'desamor', singer: "Bonnie Tyler", title: "Total Eclipse Of The Heart", emoji: '🌑❤️🎶' },
+      { id: 'd218', artist: 'desamor', singer: "Phil Collins", title: "Against All Odds", emoji: '🌊🙏💔' },
+      { id: 'd219', artist: 'desamor', singer: "Air Supply", title: "All Out Of Love", emoji: '🔋❌❤️' },
+      { id: 'd220', artist: 'desamor', singer: "Chris Isaak", title: "Wicked Game", emoji: '🎲😈💔' },
+      { id: 'd221', artist: 'desamor', singer: "The Cure", title: "Boys Don't Cry", emoji: '👦🚫😭' },
+      { id: 'd222', artist: 'desamor', singer: "Post Malone", title: "Circles", emoji: '⭕🔁😔' },
+      { id: 'd223', artist: 'desamor', singer: "Post Malone", title: "Better Now", emoji: '🙂💨🔙' },
+      { id: 'd224', artist: 'desamor', singer: "Juice WRLD", title: "Lucid Dreams", emoji: '💭😴🖤' },
+      { id: 'd225', artist: 'desamor', singer: "Khalid", title: "Better", emoji: '🔙🌃🥀' },
+      { id: 'd226', artist: 'desamor', singer: "Rihanna", title: "Love The Way You Lie", emoji: '🔥🤥💔' },
+      { id: 'd227', artist: 'desamor', singer: "Rihanna", title: "Take A Bow", emoji: '👏🎭😒' },
+      { id: 'd228', artist: 'desamor', singer: "Lizzo", title: "Truth Hurts", emoji: '🍷🔥😎' },
+      { id: 'd229', artist: 'desamor', singer: "Tate McRae", title: "You Broke Me First", emoji: '💔☝️😤' },
+      { id: 'd230', artist: 'desamor', singer: "Conan Gray", title: "Heather", emoji: '🌼👩😔' },
+      { id: 'd231', artist: 'desamor', singer: "Noah Kahan", title: "Stick Season", emoji: '🍁🌲😔' },
+      { id: 'd232', artist: 'desamor', singer: "Zach Bryan", title: "Something In The Orange", emoji: '🍊🌅😢' },
+      { id: 'd233', artist: 'desamor', singer: "Camila Cabello", title: "Consequences", emoji: '⚖️😢🎹' },
+      { id: 'd234', artist: 'desamor', singer: "Usher", title: "Burn", emoji: '🔥🚪😢' },
+      { id: 'd235', artist: 'desamor', singer: "Alicia Keys", title: "Fallin'", emoji: '🍂🎹😔' },
+      { id: 'd236', artist: 'desamor', singer: "Lauryn Hill", title: "Ex-Factor", emoji: '🔁🤷‍♀️💔' },
+      { id: 'd237', artist: 'desamor', singer: "Toni Braxton", title: "Un-Break My Heart", emoji: '🔧💔🙏' },
+      { id: 'd238', artist: 'desamor', singer: "George Michael", title: "Careless Whisper", emoji: '🎷🤫💔' },
+      { id: 'd239', artist: 'desamor', singer: "Ne-Yo", title: "So Sick", emoji: '🤢🎵💔' },
+      { id: 'd240', artist: 'desamor', singer: "Joaquín Sabina", title: "Pastillas Para No Soñar", emoji: '💊😴🌙' },
+      { id: 'd241', artist: 'desamor', singer: "Sia", title: "Elastic Heart", emoji: '❤️🧵😢' },
+      { id: 'd242', artist: 'desamor', singer: "Birdy", title: "Skinny Love", emoji: '🧣💔🎻' },
+      { id: 'd243', artist: 'desamor', singer: "Mecano", title: "Cruz De Navajas", emoji: '✝️🔪🥀' },
+      { id: 'd244', artist: 'desamor', singer: "Alejandro Sanz", title: "Amiga Mía", emoji: '👩💭🥀' }
     ];
 
     // CONFIGURACIÓN DE NIVELES PROGRESIVOS
@@ -671,7 +978,7 @@
       startTimer();
 
       const artistFilter = document.getElementById('artistFilter').value;
-      let pool = SONGS_DATABASE.filter(s => artistFilter === 'all' || s.artist === artistFilter);
+      let pool = SONGS_DATABASE.filter(s => artistFilter === 'mix' || (artistFilter === 'all' ? s.artist !== 'desamor' : s.artist === artistFilter));
 
       totalPairs = Math.min(currentConfig.pairs, pool.length);
       const selected = shuffle(pool).slice(0, totalPairs);
@@ -705,7 +1012,7 @@
       card.className = `card ${song.artist}`;
       card.dataset.id = song.id;
 
-      const artistName = song.artist === 'aitana' ? 'Aitana' : 'Mafalda';
+      const artistName = song.singer || (song.artist === 'aitana' ? 'Aitana' : 'Mafalda');
       const content = type === 'emoji'
         ? `<div class="emoji-riddle">${song.emoji}</div>`
         : `<div class="song-title-text">${song.title}</div>`;
@@ -815,7 +1122,7 @@
         return;
       }
       const song = studyList[studyIndex];
-      const artistName = song.artist === 'aitana' ? 'Aitana' : 'Mafalda';
+      const artistName = song.singer || (song.artist === 'aitana' ? 'Aitana' : 'Mafalda');
       const badgeClass = `artist-badge badge-${song.artist}`;
 
       document.getElementById('flashcard').classList.remove('flipped');
@@ -845,8 +1152,11 @@
     function updateCounts() {
       const nA = SONGS_DATABASE.filter(x => x.artist === 'aitana').length;
       const nM = SONGS_DATABASE.filter(x => x.artist === 'mafalda').length;
-      document.getElementById('subtitleText').textContent = `Emoji Song Match — ${nA + nM} Canciones Únicas`;
-      document.getElementById('optAll').textContent = `Todas las Artistas (${nA + nM})`;
+      const nD = SONGS_DATABASE.filter(x => x.artist === 'desamor').length;
+      document.getElementById('subtitleText').textContent = `Emoji Song Match — ${nA + nM + nD} Canciones Únicas`;
+      document.getElementById('optAll').textContent = `Aitana + Mafalda (${nA + nM})`;
+      document.getElementById('optDesamor').textContent = `💔 Solo Desamor (${nD})`;
+      document.getElementById('optMix').textContent = `Todo mezclado (${nA + nM + nD})`;
       document.getElementById('optAitana').textContent = `Solo Aitana (${nA})`;
       document.getElementById('optMafalda').textContent = `Solo Mafalda (${nM})`;
     }
